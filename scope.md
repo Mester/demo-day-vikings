@@ -12,6 +12,13 @@ Committed to a life of continual study and learning, decided to make the switch 
 
 [Linkedin](https://www.linkedin.com/in/benjamin-dauer-10b994ba)
 
+##### Adrian Hintermaier
+
+Just casually doing my 2nd demo day. Otherwise I'm studying for a Master of Computer Science and Engineering degree at Lund University in Sweden. Almost finished with it, all that's left is my graduation project/thesis (which I am currently looking for).
+
+[Github](https://github.com/Mester)
+
+[Linkedin](https://se.linkedin.com/in/adrianhintermaier)
 
 #### *Short description of your app.* What’s going to do? What’s problem is going to solve?
 

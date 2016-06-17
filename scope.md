@@ -4,8 +4,15 @@ App Name. Choose a name for your app.
 
 Team members. Name, short bio, github profile, [social media profile] (optional).
 
+Ben Dauer
+Committed to a life of continual study and learning, decided to make the switch to programming when he accepted that, while rabbinical students are able to spend much of their time learning and tackling new challenges, rabbis do not. Programmers do. Also he'd be a terrible at the whole warm, charismatic community leader thing.
+[Github](https://github.com/bdauer)
+[Linkedin](https://www.linkedin.com/in/benjamin-dauer-10b994ba)
+
 
 Short description of your app. What’s going to do? What’s problem is going to solve?
+
+Finding new music on Reddit can be a slog. Our app will accept a genre keyword from the user and return ten recent, trending (using our own algorithm, not Reddit's) songs in that genre, sourced from [/r/listentothis](https://www.reddit.com/r/listentothis/).
 
 
 Detailed list of the features the web app will support at Demo Day.
@@ -27,5 +34,5 @@ Frontend
 * html/css
 * bootstrap
 
-Hosting
+Server/Hosting
 * tech goes here

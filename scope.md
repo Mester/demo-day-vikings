@@ -27,9 +27,12 @@ Finding new music on Reddit can be a slog. Our app will accept a genre keyword f
 
 #### *Detailed list of the features the web app will support at Demo Day.*
 
-* Top 10 songs playable from website.
+* Top 10 songs from /r/listentothis.
+
 If we have extra time:
-* Save history of music played by user.
+* User login with oAuth.
+* Music playable from website.
+* Save history of music played by user or save list of favorites.
 
 
 #### *Services you’re going to use*

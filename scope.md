@@ -1,5 +1,5 @@
 
-#### *App Name* Choose a name for your app.
+## Timeless music for you and your friends to listen to when you want something like that: the web app
 
 #### *Team members.* Name, short bio, github profile, social media profile (optional).
 

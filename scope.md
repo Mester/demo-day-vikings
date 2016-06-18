@@ -20,6 +20,12 @@ Just casually doing my 2nd demo day. Otherwise I'm studying for a Master of Comp
 
 [Linkedin](https://se.linkedin.com/in/adrianhintermaier)
 
+##### Jason Meeks
+
+Electrical Engineer changing careers to programming in the interest of learning Python and Web Development. Looking forward to finding remote work online.
+
+[Github](https://github.com/jasonmeeks)
+
 #### *Short description of your app.* What’s going to do? What’s problem is going to solve?
 
 Finding new music on Reddit can be a slog. Our app will accept a genre keyword from the user and return ten recent, trending (using our own algorithm, not Reddit's) songs in that genre, sourced from [/r/listentothis](https://www.reddit.com/r/listentothis/).
@@ -30,7 +36,7 @@ Finding new music on Reddit can be a slog. Our app will accept a genre keyword f
 * Top 10 songs from /r/listentothis.
 
 If we have extra time:
-* User login with oAuth.
+* User login
 * Music playable from website.
 * Save history of music played by user or save list of favorites.
 

@@ -1,7 +1,6 @@
 
 #### *App Name* Choose a name for your app.
 
-
 #### *Team members.* Name, short bio, github profile, social media profile (optional).
 
 ##### Ben Dauer
@@ -36,20 +35,22 @@ Let's build something cool. Currently unemployed.
 
 #### *Short description of your app.* What’s going to do? What’s problem is going to solve?
 
-Finding new music on Reddit can be a slog. Our app will accept a genre keyword from the user and return ten recent, trending (using our own algorithm, not Reddit's) songs in that genre, sourced from [/r/listentothis](https://www.reddit.com/r/listentothis/).
+Finding new music-that you actually enjoy-on Reddit can be a slog. Our app will accept a genre-keyword from the user and generate a list of ten recent, trending songs for that genre, sourced from [/r/listentothis](https://www.reddit.com/r/listentothis/). Songs will be selected per our own, proprietary algorithm. 
 
 #### *Detailed list of the features the web app will support at Demo Day.*
 
-* Top 10 songs from /r/listentothis.
+* Generate 10 songs for a specific genre from /r/listentothis
 
-If we have extra time:
-* User login
-* Music playable from website.
-* Save history of music played by user or save list of favorites.
-
+If time permits: 
+* User login 
+* Music player
+* Suggest similar artists or songs at user's request
+* Saved history of music played by user
+* Playlist creation
+* Favoriting tracks
+* Simple way to share songs with friends, other users
 
 #### *Services you’re going to use*
-
 
 #### *Technical details: technologies used, frameworks, deploy method, hosting, etc.*
 

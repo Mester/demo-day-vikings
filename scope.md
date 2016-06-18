@@ -26,10 +26,17 @@ Electrical Engineer changing careers to programming in the interest of learning 
 
 [Github](https://github.com/jasonmeeks)
 
+##### Tyler Phillips
+
+Let's build something cool. Currently unemployed. 
+
+[Github] (https://github.com/tylerphillips55)
+
+[Linkedin] (https://www.linkedin.com/in/tyler-phillips-84481044)
+
 #### *Short description of your app.* What’s going to do? What’s problem is going to solve?
 
 Finding new music on Reddit can be a slog. Our app will accept a genre keyword from the user and return ten recent, trending (using our own algorithm, not Reddit's) songs in that genre, sourced from [/r/listentothis](https://www.reddit.com/r/listentothis/).
-
 
 #### *Detailed list of the features the web app will support at Demo Day.*
 

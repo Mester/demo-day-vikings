@@ -1,5 +1,6 @@
 
 ## Timeless music for you and your friends to listen to when you want something like that: the web app
+*App name subject to change at a later date.*
 
 #### *Team members.* Name, short bio, github profile, social media profile (optional).
 
@@ -72,4 +73,4 @@ Frontend
 * bootstrap
 
 Server/Hosting
-* tech goes here
+* To be decided at a later date

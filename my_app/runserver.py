@@ -6,7 +6,7 @@ import settings
 
 
 if __name__ == '__main__':
-    #app.debug = True
+    app.debug = True
     #app.config['SECRET_KEY'] = "kljasdno9asud89uy981uoaisjdoiajsdm89uas980d"
     #app.config['DATABASE'] = (0, settings.DATABASE_NAME)
 

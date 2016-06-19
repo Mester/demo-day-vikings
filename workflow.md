@@ -5,6 +5,7 @@
 3. If you start working on an issue, assign yourself to it.
 4. Make a new branch for whatever you're working on.
  * Never do any work on the master branch.
-5. When finished, create a pull request to the master branch. (Remember to reference the issue(s) so that they automatically close.)
+5. When finished, create a pull request to the master branch. 
+ * If you reference the issue/s with "fixes" or "resolves" the issue/s will automatically close. For example `resolves #4 #5` or `fixes #2`
 6. Another person (or possibly multiple people) takes a look at it. If they deem the PR acceptable, they will pull the branch into master branch and then delete the branch (and close the corresponding issue if it's not done automatically).
 7. Rinse and repeat.

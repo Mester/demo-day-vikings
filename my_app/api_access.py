@@ -1,8 +1,9 @@
 import requests
 from pprint import pprint as pp
 
-client_id = "j0kVJeOyMoGKTA"
-client_secret = "AUTapOwecWmrmOV4y65iITxUVuk"
+# copy key i posted in slack here
+client_id = "COPY IT HERE"
+client_secret = "COPY IT HERE"
 
 song_posts = []
 

@@ -1,7 +1,7 @@
 import os
 
-from main import app
-import settings
+from my_app.main import app
+import my_app.settings
 
 
 

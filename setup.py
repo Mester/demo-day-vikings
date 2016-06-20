@@ -19,5 +19,8 @@ setup(
     authors='Ben Dauer, Adrian Hintermaier, Jason Meeks, Tyler Phillips, Anubhav Yadav',
     url= 'https://github.com/Mester/demo-day-vikings',
     license=license,
-    packages= ['my_app']
+    packages= ['my_app'],
+    install_requires=[
+        'Flask==0.11.1'
+    ]
 )

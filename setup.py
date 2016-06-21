@@ -1,7 +1,25 @@
-# -*- coding: utf-8 -*-
-
 import os
 from setuptools import setup
+from setuptools.command.test import test as TestCommand
+
+
+class PyTest(TestCommand):
+    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = ["tests/"]
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import sys
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
+
 
 with open('README.md') as f:
     readme = f.read()
@@ -12,7 +30,7 @@ with open('LICENSE') as f:
 
 
 setup(
-    name= 'my_app',     #replace later?
+    name= 'my_app',
     version= '0.0.1',
     description='Generate a list of 10 trending songs from r/listentothis',
     long_description=readme,
@@ -22,5 +40,12 @@ setup(
     packages= ['my_app'],
     install_requires=[
         'Flask==0.11.1'
-    ]
+    ],
+     tests_require=[
+        'pytest==2.9.2',
+        'pytest-cov==2.2.1',
+        'coverage==4.0.3',
+        'tox==2.3.1'
+    ],
+    cmdclass={'test': PyTest}
 )

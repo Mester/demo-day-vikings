@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
@@ -8,7 +8,7 @@ class PyTest(TestCommand):
 
     def initialize_options(self):
         TestCommand.initialize_options(self)
-        self.pytest_args = ["tests/"]
+        self.pytest_args = ['tests/']
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
@@ -16,9 +16,9 @@ class PyTest(TestCommand):
         self.test_suite = True
 
     def run_tests(self):
-        import sys
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
+        import sys, pytest
+        errcode = pytest.main(self.pytest_args)
+        sys.exit(errcode)
 
 
 with open('README.md') as f:
@@ -39,7 +39,7 @@ setup(
     license=license,
     packages= ['my_app'],
     install_requires=[
-        'Flask==0.11.1'
+        'Flask>=0.11.1'
     ],
      tests_require=[
         'pytest==2.9.2',
@@ -47,5 +47,6 @@ setup(
         'coverage==4.0.3',
         'tox==2.3.1'
     ],
-    cmdclass={'test': PyTest}
+    cmdclass={'test': PyTest},
 )
+

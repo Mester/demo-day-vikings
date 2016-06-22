@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- This is all placeholder stuff. -->
+
+<h1>Enjoy this timeless music, if that's your thing or whatever.</h1>
+<br>
+{% if results %}
+    <ul>
+    {% for result in results %}
+    <!-- We'll want to get attributes of result and format them
+                            when we know what results looks like-->
+        <div><li>{{ result }}</li></div>
+
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% endblock %}

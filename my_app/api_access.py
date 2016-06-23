@@ -8,6 +8,7 @@ from pprint import pprint as pp
 song_posts = []
 song_count = 0
 omit_count = 0
+other_count = 0
 
 
 class Post:
@@ -36,12 +37,15 @@ def getAuthToken():
     return "ERROR"
 
 
+# We need to paginate through the API request 100 posts at a time using the before and after listings for the API
+# https://www.reddit.com/r/redditdev/comments/2uymft/help_please_re_after_and_before_in_api/
+
 def getAPIdata(token):
     global song_count
     global omit_count
+    global other_count
     headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
-    r = requests.get("https://oauth.reddit.com/r/ListenToThis/hot", headers=headers)
-    # print(r.status_code)
+    r = requests.get("https://oauth.reddit.com/r/ListenToThis/hot.json?limit=100", headers=headers)
     # print("### REDDIT API DATA REQUEST ###")
     if r.ok:
         for post in r.json()['data']['children']:
@@ -92,6 +96,8 @@ def getAPIdata(token):
                 thumbnail = post['data']['thumbnail']
                 song_posts.append(Post(artist, title, genre, year, score, url, timestamp, thumbnail))
                 song_count += 1
+            else: 
+                other_count += 1
 
 
 def temporaryMain():
@@ -107,7 +113,11 @@ def temporaryMain():
         print("URL: " + song_posts[i].url)
         print("TIMESTAMP: " + str(song_posts[i].timestamp))
         print("THUMBNAIL: " + song_posts[i].thumbnail)
-    print("API data successfully received for " + str(song_count) + " posts.")
+    print("#######################")
+    print(str(song_count) + " songs posted successfully received from reddit API.")
+    print(str(other_count) + " posts were omitted because they were not songs.")
     print(str(omit_count) + " songs were omitted due to poor formatting. See top of output for info.")
+    total = song_count + other_count + omit_count
+    print(str(total) + " posts processed.")
 
 temporaryMain()

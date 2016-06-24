@@ -16,6 +16,7 @@ other_count = 0
 # Make the regex for artist/title handle long dash ('\xe2') as well as short dash (-)
 # Change print statements to logging instead
 # Add assertions/error checking for things like request failures
+# Create function to scrub user input genre type to remove all bad characters (just alphanumeric and spaces allowed probably)
 # Create a random function to randomize 10 songs from genre
 # Create a top 10 function to get the songs from a genre with most likes
 # Create a recent 10 function that pulls 10 most recent based on timestamp
@@ -36,6 +37,7 @@ class Post:
         self.timestamp = timestamp
         self.thumbnail = thumbnail
 
+
 def getAuthToken():
     client_auth = requests.auth.HTTPBasicAuth(config.client_id, config.client_secret)
     post_data = {"grant_type": "client_credentials"}
@@ -49,9 +51,6 @@ def getAuthToken():
     # need a while loop or something until we get the token, for now... this
     return "ERROR"
 
-
-# We need to paginate through the API request 100 posts at a time using the before and after listings for the API
-# https://www.reddit.com/r/redditdev/comments/2uymft/help_please_re_after_and_before_in_api/
 
 def saveJSONdata(jsonData):
     global song_count
@@ -155,6 +154,7 @@ def printSongStatistics():
     total = song_count + other_count + omit_count
     print(str(total) + " posts processed.")
 
+
 def searchGenre(genre):
     genre_count = 0
     print("#######################")
@@ -164,6 +164,24 @@ def searchGenre(genre):
             # print(song.genre + ": " + song.artist + " - " + song.title)
             genre_songs.append(song)
     print(str(genre_count) + " songs found for " + genre + " genre were stored in genre_songs list.")
+
+
+# Need to make sure this function handles situations where less than 10 songs exist for a genre
+
+def get10Songs(list_type):
+    # Going to give the user the option to select 10 most recent, 10 most upvotes, or 10 random songs
+    if list_type = "recent":
+        # List comprehension to sort genre_songs by timestamp
+        pass
+    elif list_type = "top":
+        # List comprehension to sort genre_songs by score
+        pass
+    elif list_type = "random":
+        # get out that old math.random nonsense and spit out 10 numbers and use the index to get songs from genre_songs list (use set on the number list to guarantee no duplicates)
+        pass
+    else:
+        # add assertion here or something
+        print("Error: invalid list type")
 
 
 def temporaryMain():

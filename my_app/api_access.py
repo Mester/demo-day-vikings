@@ -40,69 +40,87 @@ def getAuthToken():
 # We need to paginate through the API request 100 posts at a time using the before and after listings for the API
 # https://www.reddit.com/r/redditdev/comments/2uymft/help_please_re_after_and_before_in_api/
 
-def getAPIdata(token):
+def saveJSONdata(jsonData):
     global song_count
     global omit_count
     global other_count
+    for post in jsonData['data']['children']:
+        if post['data']['media'] != None:
+            # print("##################################")
+            # pp(post['data'])
+            line = post['data']['title']
+            # Get artist from post
+            artist_regex = re.search('(.+) -', line)
+            if artist_regex:
+                artist = artist_regex.group(1)
+            else:
+                print("Poor artist formatting. Omitting the following post: ")
+                print(line)
+                omit_count += 1
+                continue
+            # Get title from post
+            title_regex = re.search('- (.*) \[', line)
+            if title_regex:
+                title = title_regex.group(1)
+            else:
+                print("Poor title formatting. Omitting the following post: ")
+                print(line)
+                omit_count += 1
+                continue
+            # Get genre from post
+            genre_regex = re.search('\[(.*)\]', line)
+            if genre_regex:
+                genre = genre_regex.group(1)
+            else:
+                print("Poor genre formatting. Omitting the following post: ")
+                print(line)
+                omit_count += 1
+                continue
+            # Get year from post
+            year_regex = re.search('\((\d+)\)', line)
+            if year_regex:
+                year = year_regex.group(1)
+            else:
+                print("Poor year formatting. Omitting the following post: ")
+                print(line)
+                omit_count += 1
+                continue
+            # Get the rest of the data from json info
+            score = post['data']['score']
+            url = post['data']['url']
+            timestamp = post['data']['created_utc']
+            thumbnail = post['data']['thumbnail']
+            song_posts.append(Post(artist, title, genre, year, score, url, timestamp, thumbnail))
+            song_count += 1
+        else: 
+            other_count += 1
+
+
+def getAPIdata(token):
     headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
+    
+    # For the initial request we don't have pagination information so have to do a different request
     r = requests.get("https://oauth.reddit.com/r/ListenToThis/hot.json?limit=100", headers=headers)
-    # print("### REDDIT API DATA REQUEST ###")
     if r.ok:
-        for post in r.json()['data']['children']:
-            if post['data']['media'] != None:
-                # print("##################################")
-                # pp(post['data'])
-                line = post['data']['title']
-                # Get artist from post
-                artist_regex = re.search('(.+) -', line)
-                if artist_regex:
-                    artist = artist_regex.group(1)
-                else:
-                    print("Poor artist formatting. Omitting the following post: ")
-                    print(line)
-                    omit_count += 1
-                    continue
-                # Get title from post
-                title_regex = re.search('- (.*) \[', line)
-                if title_regex:
-                    title = title_regex.group(1)
-                else:
-                    print("Poor title formatting. Omitting the following post: ")
-                    print(line)
-                    omit_count += 1
-                    continue
-                # Get genre from post
-                genre_regex = re.search('\[(.*)\]', line)
-                if genre_regex:
-                    genre = genre_regex.group(1)
-                else:
-                    print("Poor genre formatting. Omitting the following post: ")
-                    print(line)
-                    omit_count += 1
-                    continue
-                # Get year from post
-                year_regex = re.search('\((\d+)\)', line)
-                if year_regex:
-                    year = year_regex.group(1)
-                else:
-                    print("Poor year formatting. Omitting the following post: ")
-                    print(line)
-                    omit_count += 1
-                    continue
-                # Get the rest of the data from json info
-                score = post['data']['score']
-                url = post['data']['url']
-                timestamp = post['data']['created_utc']
-                thumbnail = post['data']['thumbnail']
-                song_posts.append(Post(artist, title, genre, year, score, url, timestamp, thumbnail))
-                song_count += 1
+        before = r.json()['data']['before']
+        after = r.json()['data']['after']
+        saveJSONdata(r.json())
+
+        # With pagination info, now we can do a while loop to exhaust the rest of the pages
+        while after != None:
+            r = requests.get("https://oauth.reddit.com/r/ListenToThis/hot.json?limit=100&after=" + after, headers=headers)
+            if r.ok:
+                before = r.json()['data']['before']
+                after = r.json()['data']['after']
+                saveJSONdata(r.json())
             else: 
-                other_count += 1
+                print("Request fail")
+                break
+    else:
+        print("Request fail")
+       
 
-
-def temporaryMain():
-    token = getAuthToken()
-    getAPIdata(token)
+def printSongInfo():
     for i in range(len(song_posts)):
         print("#######################")
         print("ARTIST: " + song_posts[i].artist)
@@ -119,5 +137,10 @@ def temporaryMain():
     print(str(omit_count) + " songs were omitted due to poor formatting. See top of output for info.")
     total = song_count + other_count + omit_count
     print(str(total) + " posts processed.")
+
+def temporaryMain():
+    token = getAuthToken()
+    getAPIdata(token)
+    printSongInfo()
 
 temporaryMain()

@@ -5,10 +5,23 @@ from pprint import pprint as pp
 
 # For this to work you need to make a new file called config.py in this folder and copy the key I posted to slack in it
 
-song_posts = []
+all_song_posts = []
+genre_songs = []
 song_count = 0
 omit_count = 0
 other_count = 0
+
+
+# TO DO:
+# Make the regex for artist/title handle long dash ('\xe2') as well as short dash (-)
+# Change print statements to logging instead
+# Add assertions/error checking for things like request failures
+# Create a random function to randomize 10 songs from genre
+# Create a top 10 function to get the songs from a genre with most likes
+# Create a recent 10 function that pulls 10 most recent based on timestamp
+# Store stuff in database to reduce request time? The songs dont seem to change too much when we go back as far as we do
+# Make sure no duplicates in database
+
 
 
 class Post:
@@ -54,8 +67,8 @@ def saveJSONdata(jsonData):
             if artist_regex:
                 artist = artist_regex.group(1)
             else:
-                print("Poor artist formatting. Omitting the following post: ")
-                print(line)
+                # print("Poor artist formatting. Omitting the following post: ")
+                # print(line)
                 omit_count += 1
                 continue
             # Get title from post
@@ -63,8 +76,8 @@ def saveJSONdata(jsonData):
             if title_regex:
                 title = title_regex.group(1)
             else:
-                print("Poor title formatting. Omitting the following post: ")
-                print(line)
+                # print("Poor title formatting. Omitting the following post: ")
+                # print(line)
                 omit_count += 1
                 continue
             # Get genre from post
@@ -72,8 +85,8 @@ def saveJSONdata(jsonData):
             if genre_regex:
                 genre = genre_regex.group(1)
             else:
-                print("Poor genre formatting. Omitting the following post: ")
-                print(line)
+                # print("Poor genre formatting. Omitting the following post: ")
+                # print(line)
                 omit_count += 1
                 continue
             # Get year from post
@@ -81,8 +94,8 @@ def saveJSONdata(jsonData):
             if year_regex:
                 year = year_regex.group(1)
             else:
-                print("Poor year formatting. Omitting the following post: ")
-                print(line)
+                # print("Poor year formatting. Omitting the following post: ")
+                # print(line)
                 omit_count += 1
                 continue
             # Get the rest of the data from json info
@@ -90,7 +103,7 @@ def saveJSONdata(jsonData):
             url = post['data']['url']
             timestamp = post['data']['created_utc']
             thumbnail = post['data']['thumbnail']
-            song_posts.append(Post(artist, title, genre, year, score, url, timestamp, thumbnail))
+            all_song_posts.append(Post(artist, title, genre, year, score, url, timestamp, thumbnail))
             song_count += 1
         else: 
             other_count += 1
@@ -107,6 +120,7 @@ def getAPIdata(token):
         saveJSONdata(r.json())
 
         # With pagination info, now we can do a while loop to exhaust the rest of the pages
+        # might want to change the while loop to a for loop or have a counter to prevent never ending loop
         while after != None:
             r = requests.get("https://oauth.reddit.com/r/ListenToThis/hot.json?limit=100&after=" + after, headers=headers)
             if r.ok:
@@ -120,17 +134,20 @@ def getAPIdata(token):
         print("Request fail")
        
 
-def printSongInfo():
-    for i in range(len(song_posts)):
+def printSongInfo(song_list):
+    for song in song_list:
         print("#######################")
-        print("ARTIST: " + song_posts[i].artist)
-        print("TITLE: " + song_posts[i].title)
-        print("GENRE: " + song_posts[i].genre)
-        print("YEAR: " + song_posts[i].year)
-        print("SCORE: " + str(song_posts[i].score))
-        print("URL: " + song_posts[i].url)
-        print("TIMESTAMP: " + str(song_posts[i].timestamp))
-        print("THUMBNAIL: " + song_posts[i].thumbnail)
+        print("ARTIST: " + song.artist)
+        print("TITLE: " + song.title)
+        print("GENRE: " + song.genre)
+        print("YEAR: " + song.year)
+        print("SCORE: " + str(song.score))
+        print("URL: " + song.url)
+        print("TIMESTAMP: " + str(song.timestamp))
+        print("THUMBNAIL: " + song.thumbnail)
+
+
+def printSongStatistics():
     print("#######################")
     print(str(song_count) + " songs posted successfully received from reddit API.")
     print(str(other_count) + " posts were omitted because they were not songs.")
@@ -138,9 +155,23 @@ def printSongInfo():
     total = song_count + other_count + omit_count
     print(str(total) + " posts processed.")
 
+def searchGenre(genre):
+    genre_count = 0
+    print("#######################")
+    for song in all_song_posts:
+        if genre.lower() in song.genre.lower():
+            genre_count += 1
+            # print(song.genre + ": " + song.artist + " - " + song.title)
+            genre_songs.append(song)
+    print(str(genre_count) + " songs found for " + genre + " genre were stored in genre_songs list.")
+
+
 def temporaryMain():
     token = getAuthToken()
     getAPIdata(token)
-    printSongInfo()
+    # printSongInfo(all_song_posts)
+    printSongStatistics()
+    searchGenre("Rock")
+    # printSongInfo(genre_songs)
 
 temporaryMain()

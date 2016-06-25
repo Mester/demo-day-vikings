@@ -37,7 +37,7 @@ class Post:
 
     @classmethod
     def create_from_post_JSON(cls, post_json):
-        """Create a Post object from the post JSON
+        """Create a Post object from the post's JSON
     
         Keyword arguments:
         post_title -- the post title
@@ -99,7 +99,7 @@ def getAuthToken():
     return "ERROR"
 
 
-def saveJSONdata(jsonData):
+def saveJSONdata(jsonData): #TODO: More descriptive name
     """Description here
 
     Keyword arguments:
@@ -183,6 +183,7 @@ def searchGenre(genre):
     """Description here
 
     Keyword arguments:
+    genre -- The genre to be searched for
     """
     genre_count = 0
     print("#######################")

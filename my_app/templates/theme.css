@@ -1,3 +1,13 @@
+body {
+  padding-top: 60px;
+}
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}
+
+
 .navbar-custom {
     background-color:#2E2633;
     color:#DCE9BE;

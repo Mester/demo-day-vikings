@@ -1,5 +1,7 @@
 body {
-  padding-top: 60px;
+  padding-top: 100px;
+  background: #555152;
+  color: #DCE9BE;
 }
 @media (max-width: 979px) {
   body {
@@ -10,6 +12,17 @@ body {
 
 .navbar-custom {
     background-color:#2E2633;
-    color:#DCE9BE;
+    color: #DCE9BE;
 
+}
+
+.custom-pick-genre {
+    background-color:#99173C;
+    color: #EFFFCD;
+    border: 2px solid #2E2633;
+    border-radius: 10px;
+    padding: 0px 10px 10px 10px;
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
 }

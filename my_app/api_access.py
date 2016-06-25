@@ -117,7 +117,7 @@ def saveJSONdata(jsonData):
             other_count += 1
 
 
-def get_100_from_hot(token):
+def get_1000_from_hot(token):
     headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
     
     # For the initial request we don't have pagination information so have to do a different request
@@ -195,7 +195,7 @@ def get10Songs(list_type):
 
 def temporaryMain():
     token = getAuthToken()
-    get_100_from_hot(token)
+    get_1000_from_hot(token)
     # printSongInfo(all_song_posts)
     printSongStatistics()
     searchGenre("Rock")

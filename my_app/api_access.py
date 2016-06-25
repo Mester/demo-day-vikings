@@ -45,7 +45,7 @@ class Post:
         if not post_json:
             raise Exception() # TODO: better error handling
         post_object = cls()
-        post_title = post_json['data']['title'].lower()
+        post_title = post_json['data']['title']
         
         # Get artist from post
         artist_regex = re.search(r'(.+) -', post_title)
@@ -121,9 +121,7 @@ def saveJSONdata(jsonData): #TODO: More descriptive name
 
 
 def get_list_from_hot():
-    """Description here
-
-    Keyword arguments:
+    """Get a list from the "hot" tab, usually around 1000 posts are gotten
     """
     headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
     

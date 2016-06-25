@@ -27,16 +27,64 @@ other_count = 0
 
 class Post:
     # Post class to store the attributes for each song post
-    def __init__(self, artist, title, genre, year, score, url, timestamp, thumbnail):
-        self.artist = artist
-        self.title = title
-        self.genre = genre
-        self.year = year
-        self.score = score
-        self.url = url
-        self.timestamp = timestamp
-        self.thumbnail = thumbnail
+    def __init__(self):
+        #self.artist = artist
+        #self.title = title
+        #self.genre = genre
+        #self.year = year
+        #self.score = score
+        #self.url = url
+        #self.timestamp = timestamp
+        #self.thumbnail = thumbnail
+        pass
 
+    @classmethod
+    def create_from_post_JSON(cls, post_json):
+        """Create a Post object from the post JSON
+    
+        Keyword arguments:
+        post_title -- the post title
+        """
+        if not post_json:
+            raise Exception() # TODO: better error handling
+        post_object = cls()
+        post_title = post_json['data']['title'].lower()
+        
+        # Get artist from post
+        artist_regex = re.search('(.+) -', post_title)
+        if artist_regex:
+            post_object.artist = artist_regex.group(1)
+        else:
+            raise Exception("Poor artist formatting") # TODO: better error handling
+        
+        # Get title from post
+        title_regex = re.search('- (.*) \[', post_title)
+        if title_regex:
+            post_object.title = title_regex.group(1)
+        else:
+            raise Exception("Poor title formatting.") # TODO: better error handling
+        
+         # Get genre from post
+        genre_regex = re.search('\[(.*)\]', post_title)
+        if genre_regex:
+            post_object.genre = genre_regex.group(1)
+        else:
+            raise Exception("Poor genre formatting.") # TODO: better error handling
+        
+        # Get year from post
+        year_regex = re.search('\((\d+)\)', post_title)
+        if year_regex:
+            post_object.year = year_regex.group(1)
+        else:
+            raise Exception("Poor year formatting") # TODO: better error handling
+
+        # Get the rest of the data from json info
+        post_object.score = post_json['data']['score']
+        post_object.url = post_json['data']['url']
+        post_object.timestamp = post_json['data']['created_utc']
+        post_object.thumbnail = post_json['data']['thumbnail']
+        
+        return post_object
 
 def getAuthToken():
     client_auth = requests.auth.HTTPBasicAuth(config.client_id, config.client_secret)
@@ -60,55 +108,16 @@ def saveJSONdata(jsonData):
         if post['data']['media'] != None:
             # print("##################################")
             # pp(post['data'])
-            line = post['data']['title']
-            # Get artist from post
-            artist_regex = re.search('(.+) -', line)
-            if artist_regex:
-                artist = artist_regex.group(1)
-            else:
-                # print("Poor artist formatting. Omitting the following post: ")
-                # print(line)
+            try:            
+                all_song_posts.append(Post.create_from_post_JSON(post))
+            except:
                 omit_count += 1
-                continue
-            # Get title from post
-            title_regex = re.search('- (.*) \[', line)
-            if title_regex:
-                title = title_regex.group(1)
-            else:
-                # print("Poor title formatting. Omitting the following post: ")
-                # print(line)
-                omit_count += 1
-                continue
-            # Get genre from post
-            genre_regex = re.search('\[(.*)\]', line)
-            if genre_regex:
-                genre = genre_regex.group(1)
-            else:
-                # print("Poor genre formatting. Omitting the following post: ")
-                # print(line)
-                omit_count += 1
-                continue
-            # Get year from post
-            year_regex = re.search('\((\d+)\)', line)
-            if year_regex:
-                year = year_regex.group(1)
-            else:
-                # print("Poor year formatting. Omitting the following post: ")
-                # print(line)
-                omit_count += 1
-                continue
-            # Get the rest of the data from json info
-            score = post['data']['score']
-            url = post['data']['url']
-            timestamp = post['data']['created_utc']
-            thumbnail = post['data']['thumbnail']
-            all_song_posts.append(Post(artist, title, genre, year, score, url, timestamp, thumbnail))
             song_count += 1
         else: 
             other_count += 1
 
 
-def getAPIdata(token):
+def get_100_from_hot(token):
     headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
     
     # For the initial request we don't have pagination information so have to do a different request
@@ -186,7 +195,7 @@ def get10Songs(list_type):
 
 def temporaryMain():
     token = getAuthToken()
-    getAPIdata(token)
+    get_100_from_hot(token)
     # printSongInfo(all_song_posts)
     printSongStatistics()
     searchGenre("Rock")

@@ -46,35 +46,38 @@ class Post:
             raise Exception() # TODO: better error handling
         post_object = cls()
         post_title = post_json['data']['title']
+        p = re.compile(r"""
+                (?P<artist>.+)  # The artist
+                \s*-+\s*        # Skip some spaces and dashes
+                (?P<title>.*)   # The title
+                \s*\[           # Skip some spaces and opening bracket
+                (?P<genre>.*)   # The genre
+                \]\s*\(         # Skip closing bracket, spaces and opening parenthesis
+                (?P<year>\d+)   # The year
+                \)              # Skip closing parenthesis
+                    """, re.VERBOSE | re.IGNORECASE)
+        m = p.search(post_title)
         
-        # Get artist from post
-        artist_regex = re.search(r'(.+) -', post_title)
-        if artist_regex:
-            post_object.artist = artist_regex.group(1)
+        if m.group("artist"):
+            post_object.artist = m.group("artist")
         else:
             raise Exception("Poor artist formatting") # TODO: better error handling
-        
-        # Get title from post
-        title_regex = re.search(r'- (.*) \[', post_title)
-        if title_regex:
-            post_object.title = title_regex.group(1)
+            
+        if m.group("title"):
+            post_object.title = m.group("title")
         else:
             raise Exception("Poor title formatting.") # TODO: better error handling
-        
-         # Get genre from post
-        genre_regex = re.search(r'\[(.*)\]', post_title)
-        if genre_regex:
-            post_object.genre = genre_regex.group(1)
+            
+        if m.group("genre"):
+            post_object.genre = m.group("genre")
         else:
             raise Exception("Poor genre formatting.") # TODO: better error handling
-        
-        # Get year from post
-        year_regex = re.search(r'\((\d+)\)', post_title)
-        if year_regex:
-            post_object.year = year_regex.group(1)
+            
+        if m.group("year"):
+            post_object.year = m.group("year")
         else:
             raise Exception("Poor year formatting") # TODO: better error handling
-
+        
         # Get the rest of the data from json info
         post_object.score = post_json['data']['score']
         post_object.url = post_json['data']['url']
@@ -114,6 +117,7 @@ def saveJSONdata(jsonData): #TODO: More descriptive name
             try:            
                 all_song_posts.append(Post.create_from_post_JSON(post))
             except:
+                print(post["data"]["title"])
                 omit_count += 1
             song_count += 1
         else: 

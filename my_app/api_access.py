@@ -43,28 +43,28 @@ class Post:
         post_title = post_json['data']['title'].lower()
         
         # Get artist from post
-        artist_regex = re.search('(.+) -', post_title)
+        artist_regex = re.search(r'(.+) -', post_title)
         if artist_regex:
             post_object.artist = artist_regex.group(1)
         else:
             raise Exception("Poor artist formatting") # TODO: better error handling
         
         # Get title from post
-        title_regex = re.search('- (.*) \[', post_title)
+        title_regex = re.search(r'- (.*) \[', post_title)
         if title_regex:
             post_object.title = title_regex.group(1)
         else:
             raise Exception("Poor title formatting.") # TODO: better error handling
         
          # Get genre from post
-        genre_regex = re.search('\[(.*)\]', post_title)
+        genre_regex = re.search(r'\[(.*)\]', post_title)
         if genre_regex:
             post_object.genre = genre_regex.group(1)
         else:
             raise Exception("Poor genre formatting.") # TODO: better error handling
         
         # Get year from post
-        year_regex = re.search('\((\d+)\)', post_title)
+        year_regex = re.search(r'\((\d+)\)', post_title)
         if year_regex:
             post_object.year = year_regex.group(1)
         else:

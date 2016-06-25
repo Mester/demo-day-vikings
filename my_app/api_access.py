@@ -120,7 +120,7 @@ def saveJSONdata(jsonData):
             other_count += 1
 
 
-def get_1000_from_hot():
+def get_list_from_hot():
     """Description here
 
     Keyword arguments:
@@ -218,7 +218,7 @@ def get10Songs(list_type): #TODO: more descriptive name
 
 def temporaryMain():
 
-    get_1000_from_hot()
+    get_list_from_hot()
     # printSongInfo(all_song_posts)
     printSongStatistics()
     searchGenre("Rock")

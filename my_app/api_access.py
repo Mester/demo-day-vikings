@@ -3,6 +3,11 @@ import config
 import re
 from pprint import pprint as pp
 
+# static variables
+RECENT = 0
+TOP = 1
+RANDOM = 2
+
 # For this to work you need to make a new file called config.py in this folder and copy the key I posted to slack in it
 
 all_song_posts = []
@@ -27,18 +32,63 @@ other_count = 0
 
 class Post:
     # Post class to store the attributes for each song post
-    def __init__(self, artist, title, genre, year, score, url, timestamp, thumbnail):
-        self.artist = artist
-        self.title = title
-        self.genre = genre
-        self.year = year
-        self.score = score
-        self.url = url
-        self.timestamp = timestamp
-        self.thumbnail = thumbnail
+    def __init__(self):
+        pass
 
+    @classmethod
+    def create_from_post_JSON(cls, post_json):
+        """Create a Post object from the post's JSON
+    
+        Keyword arguments:
+        post_title -- the post title
+        """
+        if not post_json:
+            raise Exception() # TODO: better error handling
+        post_object = cls()
+        post_title = post_json['data']['title']
+        p = re.compile(r"""
+                (?P<artist>.+)  # The artist
+                \s*-+\s*        # Skip some spaces and dashes
+                (?P<title>.*)   # The title
+                \s*\[           # Skip some spaces and opening bracket
+                (?P<genre>.*)   # The genre
+                \]\s*\(         # Skip closing bracket, spaces and opening parenthesis
+                (?P<year>\d+)   # The year
+                \)              # Skip closing parenthesis
+                    """, re.VERBOSE | re.IGNORECASE)
+        m = p.search(post_title)
+        
+        if m.group("artist"):
+            post_object.artist = m.group("artist")
+        else:
+            raise Exception("Poor artist formatting") # TODO: better error handling
+            
+        if m.group("title"):
+            post_object.title = m.group("title")
+        else:
+            raise Exception("Poor title formatting.") # TODO: better error handling
+            
+        if m.group("genre"):
+            post_object.genre = m.group("genre")
+        else:
+            raise Exception("Poor genre formatting.") # TODO: better error handling
+            
+        if m.group("year"):
+            post_object.year = m.group("year")
+        else:
+            raise Exception("Poor year formatting") # TODO: better error handling
+        
+        # Get the rest of the data from json info
+        post_object.score = post_json['data']['score']
+        post_object.url = post_json['data']['url']
+        post_object.timestamp = post_json['data']['created_utc']
+        post_object.thumbnail = post_json['data']['thumbnail']
+        
+        return post_object
 
 def getAuthToken():
+    """Description here
+    """
     client_auth = requests.auth.HTTPBasicAuth(config.client_id, config.client_secret)
     post_data = {"grant_type": "client_credentials"}
     reddit_headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
@@ -52,7 +102,11 @@ def getAuthToken():
     return "ERROR"
 
 
-def saveJSONdata(jsonData):
+def saveJSONdata(jsonData): #TODO: More descriptive name
+    """Description here
+
+    Keyword arguments:
+    """
     global song_count
     global omit_count
     global other_count
@@ -60,55 +114,19 @@ def saveJSONdata(jsonData):
         if post['data']['media'] != None:
             # print("##################################")
             # pp(post['data'])
-            line = post['data']['title']
-            # Get artist from post
-            artist_regex = re.search('(.+) -', line)
-            if artist_regex:
-                artist = artist_regex.group(1)
-            else:
-                # print("Poor artist formatting. Omitting the following post: ")
-                # print(line)
+            try:            
+                all_song_posts.append(Post.create_from_post_JSON(post))
+            except:
+                print(post["data"]["title"])
                 omit_count += 1
-                continue
-            # Get title from post
-            title_regex = re.search('- (.*) \[', line)
-            if title_regex:
-                title = title_regex.group(1)
-            else:
-                # print("Poor title formatting. Omitting the following post: ")
-                # print(line)
-                omit_count += 1
-                continue
-            # Get genre from post
-            genre_regex = re.search('\[(.*)\]', line)
-            if genre_regex:
-                genre = genre_regex.group(1)
-            else:
-                # print("Poor genre formatting. Omitting the following post: ")
-                # print(line)
-                omit_count += 1
-                continue
-            # Get year from post
-            year_regex = re.search('\((\d+)\)', line)
-            if year_regex:
-                year = year_regex.group(1)
-            else:
-                # print("Poor year formatting. Omitting the following post: ")
-                # print(line)
-                omit_count += 1
-                continue
-            # Get the rest of the data from json info
-            score = post['data']['score']
-            url = post['data']['url']
-            timestamp = post['data']['created_utc']
-            thumbnail = post['data']['thumbnail']
-            all_song_posts.append(Post(artist, title, genre, year, score, url, timestamp, thumbnail))
             song_count += 1
         else: 
             other_count += 1
 
 
-def getAPIdata(token):
+def get_list_from_hot():
+    """Get a list from the "hot" tab, usually around 1000 posts are gotten
+    """
     headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
     
     # For the initial request we don't have pagination information so have to do a different request
@@ -134,6 +152,10 @@ def getAPIdata(token):
        
 
 def printSongInfo(song_list):
+    """Description here
+
+    Keyword arguments:
+    """
     for song in song_list:
         print("#######################")
         print("ARTIST: " + song.artist)
@@ -147,6 +169,10 @@ def printSongInfo(song_list):
 
 
 def printSongStatistics():
+    """Description here
+
+    Keyword arguments:
+    """
     print("#######################")
     print(str(song_count) + " songs posted successfully received from reddit API.")
     print(str(other_count) + " posts were omitted because they were not songs.")
@@ -156,6 +182,11 @@ def printSongStatistics():
 
 
 def searchGenre(genre):
+    """Description here
+
+    Keyword arguments:
+    genre -- The genre to be searched for
+    """
     genre_count = 0
     print("#######################")
     for song in all_song_posts:
@@ -167,16 +198,20 @@ def searchGenre(genre):
 
 
 # Need to make sure this function handles situations where less than 10 songs exist for a genre
+def get10Songs(list_type): #TODO: more descriptive name
+    """Description here
 
-def get10Songs(list_type):
+    Keyword arguments:
+    list_type -- one of the types RECENT, TOP, RANDOM
+    """
     # Going to give the user the option to select 10 most recent, 10 most upvotes, or 10 random songs
-    if list_type = "recent":
+    if list_type == RECENT:
         # List comprehension to sort genre_songs by timestamp
         pass
-    elif list_type = "top":
+    elif list_type == TOP:
         # List comprehension to sort genre_songs by score
         pass
-    elif list_type = "random":
+    elif list_type == RANDOM:
         # get out that old math.random nonsense and spit out 10 numbers and use the index to get songs from genre_songs list (use set on the number list to guarantee no duplicates)
         pass
     else:
@@ -185,11 +220,12 @@ def get10Songs(list_type):
 
 
 def temporaryMain():
-    token = getAuthToken()
-    getAPIdata(token)
+
+    get_list_from_hot()
     # printSongInfo(all_song_posts)
     printSongStatistics()
     searchGenre("Rock")
     # printSongInfo(genre_songs)
 
+token = getAuthToken()
 temporaryMain()

@@ -170,13 +170,13 @@ def searchGenre(genre):
 
 def get10Songs(list_type):
     # Going to give the user the option to select 10 most recent, 10 most upvotes, or 10 random songs
-    if list_type = "recent":
+    if list_type == "recent":
         # List comprehension to sort genre_songs by timestamp
         pass
-    elif list_type = "top":
+    elif list_type == "top":
         # List comprehension to sort genre_songs by score
         pass
-    elif list_type = "random":
+    elif list_type == "random":
         # get out that old math.random nonsense and spit out 10 numbers and use the index to get songs from genre_songs list (use set on the number list to guarantee no duplicates)
         pass
     else:

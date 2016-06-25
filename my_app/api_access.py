@@ -28,14 +28,6 @@ other_count = 0
 class Post:
     # Post class to store the attributes for each song post
     def __init__(self):
-        #self.artist = artist
-        #self.title = title
-        #self.genre = genre
-        #self.year = year
-        #self.score = score
-        #self.url = url
-        #self.timestamp = timestamp
-        #self.thumbnail = thumbnail
         pass
 
     @classmethod

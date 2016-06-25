@@ -87,6 +87,8 @@ class Post:
         return post_object
 
 def getAuthToken():
+    """Description here
+    """
     client_auth = requests.auth.HTTPBasicAuth(config.client_id, config.client_secret)
     post_data = {"grant_type": "client_credentials"}
     reddit_headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
@@ -101,6 +103,10 @@ def getAuthToken():
 
 
 def saveJSONdata(jsonData):
+    """Description here
+
+    Keyword arguments:
+    """
     global song_count
     global omit_count
     global other_count
@@ -118,6 +124,10 @@ def saveJSONdata(jsonData):
 
 
 def get_1000_from_hot(token):
+    """Description here
+
+    Keyword arguments:
+    """
     headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
     
     # For the initial request we don't have pagination information so have to do a different request
@@ -143,6 +153,10 @@ def get_1000_from_hot(token):
        
 
 def printSongInfo(song_list):
+    """Description here
+
+    Keyword arguments:
+    """
     for song in song_list:
         print("#######################")
         print("ARTIST: " + song.artist)
@@ -156,6 +170,10 @@ def printSongInfo(song_list):
 
 
 def printSongStatistics():
+    """Description here
+
+    Keyword arguments:
+    """
     print("#######################")
     print(str(song_count) + " songs posted successfully received from reddit API.")
     print(str(other_count) + " posts were omitted because they were not songs.")
@@ -165,6 +183,10 @@ def printSongStatistics():
 
 
 def searchGenre(genre):
+    """Description here
+
+    Keyword arguments:
+    """
     genre_count = 0
     print("#######################")
     for song in all_song_posts:
@@ -176,8 +198,11 @@ def searchGenre(genre):
 
 
 # Need to make sure this function handles situations where less than 10 songs exist for a genre
+def get10Songs(list_type): #TODO: more descriptive name
+    """Description here
 
-def get10Songs(list_type):
+    Keyword arguments:
+    """
     # Going to give the user the option to select 10 most recent, 10 most upvotes, or 10 random songs
     if list_type == "recent":
         # List comprehension to sort genre_songs by timestamp

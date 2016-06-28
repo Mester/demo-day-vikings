@@ -1,4 +1,4 @@
 import unittest
 
-from my_app.main import app
+from my_app.views import app
 

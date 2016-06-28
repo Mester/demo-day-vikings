@@ -1,20 +1,25 @@
+import sys
+import time
 import requests
-import config
 import re
+import random
+import config
+import utils
 from pprint import pprint as pp
 
+
 # static variables
-RECENT = 0
-TOP = 1
-RANDOM = 2
+RECENT = "new"
+TOP = "top"
+RANDOM = "random"
+HOT = "hot"
 
-# For this to work you need to make a new file called config.py in this folder and copy the key I posted to slack in it
+GENRE = 0
+YEAR = 1
 
-all_song_posts = []
-genre_songs = []
-song_count = 0
-omit_count = 0
-other_count = 0
+
+
+selected_songs = []
 
 
 # TO DO:
@@ -22,16 +27,13 @@ other_count = 0
 # Change print statements to logging instead
 # Add assertions/error checking for things like request failures
 # Create function to scrub user input genre type to remove all bad characters (just alphanumeric and spaces allowed probably)
-# Create a random function to randomize 10 songs from genre
-# Create a top 10 function to get the songs from a genre with most likes
-# Create a recent 10 function that pulls 10 most recent based on timestamp
 # Store stuff in database to reduce request time? The songs dont seem to change too much when we go back as far as we do
 # Make sure no duplicates in database
 
 
 
 class Post:
-    # Post class to store the attributes for each song post
+    # Post class to store/format the attributes for each song post
     def __init__(self):
         pass
 
@@ -86,75 +88,99 @@ class Post:
         
         return post_object
 
-def getAuthToken():
-    """Description here
+def access_token():
     """
-    client_auth = requests.auth.HTTPBasicAuth(config.client_id, config.client_secret)
-    post_data = {"grant_type": "client_credentials"}
-    reddit_headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
-    r = requests.post("https://www.reddit.com/api/v1/access_token", auth=client_auth, data=post_data, headers=reddit_headers)
-    # print("### ACCESS TOKEN REQUEST ###")
-    # print(r.status_code)
-    if r.ok:
-        token = r.json()['access_token']
-        return token
-    # need a while loop or something until we get the token, for now... this
-    return "ERROR"
+    Returns OAuth access token
+    """
+    data = {'grant_type': 'client_credentials'}
+    headers = {'User-Agent': 'ChangeMeClient/0.1 by YourUsername'}
+    for _ in range(5):
+        try:
+            r = requests.post("https://www.reddit.com/api/v1/access_token", auth=(config.CLIENT_ID,
+                                                                                  config.CLIENT_SECRET), data=data,
+                              headers=headers, timeout=(3.05, 20))
+            r.raise_for_status()
+            break
+        except (requests.ConnectionError, requests.Timeout):
+            continue
+        except requests.HTTPError:
+            if r.status_code == 401:
+                print("INVALID CLIENT CREDENTIALS: Please verify that you are properly sending HTTP Basic "
+                      "Authorization headers and that the client's credentials are correct")
+                break
+            else:
+                r.raise_for_status()
+        except requests.RequestException as e:
+            print(e)
+            sys.exit(1)
+    token = r.json()['access_token']
+    return token
 
 
-def saveJSONdata(jsonData): #TODO: More descriptive name
-    """Description here
+def save_JSON_data(JSON_list): #TODO: More descriptive name
+    """Creates post objects from JSON data and calculates statistics from processing 
 
     Keyword arguments:
+    jsonData -- data from the API request
     """
-    global song_count
-    global omit_count
-    global other_count
-    for post in jsonData['data']['children']:
-        if post['data']['media'] != None:
-            # print("##################################")
-            # pp(post['data'])
-            try:            
-                all_song_posts.append(Post.create_from_post_JSON(post))
-            except:
-                print(post["data"]["title"])
-                omit_count += 1
-            song_count += 1
-        else: 
-            other_count += 1
+    song_count = 0
+    omit_count = 0
+    other_count = 0
+    all_song_posts = []
+    for JSON_data in JSON_list:
+        for post in JSON_data['data']['children']:
+            if post['data']['media'] != None:
+                try:            
+                    all_song_posts.append(Post.create_from_post_JSON(post))
+                except:
+                    print(post["data"]["title"])
+                    # Count songs that have formatting errors
+                    omit_count += 1
+                # Count songs that are successfully received
+                song_count += 1
+            else: 
+                # Count songs that don't have media data (no link to song)
+                other_count += 1
+    return all_song_posts, song_count, omit_count, other_count
 
 
-def get_list_from_hot():
-    """Get a list from the "hot" tab, usually around 1000 posts are gotten
+def get_list_from_API(sort_type=HOT):
+    """Get a list of song data from Reddit API , usually around 1000 posts are gotten
+
+    Keyword arguments:
+    sort_type -- determines type of API request - HOT, RECENT, TOP, or RANDOM valid
     """
+
     headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
     
     # For the initial request we don't have pagination information so have to do a different request
-    r = requests.get("https://oauth.reddit.com/r/ListenToThis/hot.json?limit=100", headers=headers)
+    r = requests.get("https://oauth.reddit.com/r/ListenToThis/" + sort_type + ".json?limit=100", headers=headers)
     if r.ok:
+        JSON_list = []
         before = r.json()['data']['before']
         after = r.json()['data']['after']
-        saveJSONdata(r.json())
+        JSON_list.append(r.json())
 
-        # With pagination info, now we can do a while loop to exhaust the rest of the pages
-        # might want to change the while loop to a for loop or have a counter to prevent never ending loop
+        # Now we have "after" data to page through the reddit API data
         while after != None:
-            r = requests.get("https://oauth.reddit.com/r/ListenToThis/hot.json?limit=100&after=" + after, headers=headers)
+            r = requests.get("https://oauth.reddit.com/r/ListenToThis/" + sort_type + ".json?limit=100&after=" + after, headers=headers)
             if r.ok:
                 before = r.json()['data']['before']
                 after = r.json()['data']['after']
-                saveJSONdata(r.json())
+                JSON_list.append(r.json())
             else: 
                 print("Request fail")
                 break
+        return JSON_list
     else:
         print("Request fail")
        
 
-def printSongInfo(song_list):
-    """Description here
+def print_song_info(song_list):
+    """Debug function that outputs song information
 
     Keyword arguments:
+    song_list -- list of songs to print out information for
     """
     for song in song_list:
         print("#######################")
@@ -168,8 +194,8 @@ def printSongInfo(song_list):
         print("THUMBNAIL: " + song.thumbnail)
 
 
-def printSongStatistics():
-    """Description here
+def print_song_statistics(song_count, omit_count, other_count):
+    """Debug function that outputs song statistics
 
     Keyword arguments:
     """
@@ -181,8 +207,8 @@ def printSongStatistics():
     print(str(total) + " posts processed.")
 
 
-def searchGenre(genre):
-    """Description here
+def search_genre(all_song_posts, genre):
+    """Searches all song data for songs that match user inputted Genre
 
     Keyword arguments:
     genre -- The genre to be searched for
@@ -192,40 +218,86 @@ def searchGenre(genre):
     for song in all_song_posts:
         if genre.lower() in song.genre.lower():
             genre_count += 1
-            # print(song.genre + ": " + song.artist + " - " + song.title)
-            genre_songs.append(song)
-    print(str(genre_count) + " songs found for " + genre + " genre were stored in genre_songs list.")
+            selected_songs.append(song)
+    print(str(genre_count) + " songs found for " + genre + " genre were stored in selected_songs list.")
 
 
-# Need to make sure this function handles situations where less than 10 songs exist for a genre
-def get10Songs(list_type): #TODO: more descriptive name
-    """Description here
+def search_year(all_song_posts, year):
+    """Searches all song data for songs that match user inputted Year
 
     Keyword arguments:
-    list_type -- one of the types RECENT, TOP, RANDOM
+    year -- The year to be searched for
     """
-    # Going to give the user the option to select 10 most recent, 10 most upvotes, or 10 random songs
+    year_count = 0
+    print("#######################")
+    for song in all_song_posts:
+        if str(year) in str(song.year):
+            year_count += 1
+            selected_songs.append(song)
+    print(str(year_count) + " songs found for the year " + str(year) + " were stored in selected_songs list.")
+
+
+def get_10_songs(list_type): #TODO: more descriptive name
+    """Pulls 10 songs from the list of songs user selected (genre or year)
+
+    Keyword arguments:
+    list_type -- user can select how songs are sorted: RECENT, TOP, RANDOM (HOT to be added)
+    """
     if list_type == RECENT:
-        # List comprehension to sort genre_songs by timestamp
-        pass
+        # Sort songs by RECENT first and print them out
+        selected_songs.sort(key=lambda x: x.timestamp, reverse=True)
+        for i in range(10):
+            if i == len(selected_songs):
+                break
+            print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title + " " + str(selected_songs[i].timestamp))
     elif list_type == TOP:
-        # List comprehension to sort genre_songs by score
-        pass
+        # Sort songs by TOP first and print them out
+        selected_songs.sort(key=lambda x: x.score, reverse=True)
+        for i in range(10):
+            if i == len(selected_songs):
+                break
+            print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title + " " + str(selected_songs[i].score))
     elif list_type == RANDOM:
-        # get out that old math.random nonsense and spit out 10 numbers and use the index to get songs from genre_songs list (use set on the number list to guarantee no duplicates)
-        pass
+        # Sort songs randomly and print them out
+        # Create a random list of 10 indexes (if possible) and print out songs from the list using them
+        random_index_list = []
+        while len(random_index_list) <= 10 and len(random_index_list) != len(selected_songs):
+            temp_idx = random.randint(0,len(selected_songs) - 1)
+            if temp_idx not in random_index_list:
+                random_index_list.append(temp_idx)
+        for i in random_index_list:
+            print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title)
     else:
         # add assertion here or something
         print("Error: invalid list type")
 
 
-def temporaryMain():
+def temporary_main(search_type, sort_type, search_term):
+    """Temporary main function to run all code
 
-    get_list_from_hot()
-    # printSongInfo(all_song_posts)
-    printSongStatistics()
-    searchGenre("Rock")
-    # printSongInfo(genre_songs)
+    Keyword arguments:
+    search_type -- lets user search for GENRE or YEAR
+    sort_type --lets user sort list by RECENT, TOP, RANDOM (can add HOT to this)
+    search_term -- user input search term for genre or year to search for
+    """
 
-token = getAuthToken()
-temporaryMain()
+    # Hardcoding it to have the reddit API search from HOT, TOP does not return 1000 results. RECENT would be okay too
+    # Might want to search HOT normally, but use RECENT for our RECENT list
+    JSON_list = get_list_from_API(HOT)
+    all_song_posts, song_count, omit_count, other_count = save_JSON_data(JSON_list)
+    # print_song_info(all_song_posts)
+    print_song_statistics(song_count, omit_count, other_count)
+    if search_type == GENRE:
+        search_genre(all_song_posts, search_term)
+    elif search_type == YEAR:
+        search_year(all_song_posts, search_term)
+    else:
+        raise Exception("Invalid Search Type") # TODO: better error handling
+    # print_song_info(selected_songs)
+    get_10_songs(sort_type)
+
+token = access_token()
+
+# TRY IT OUT! 
+# temporary_main(GENRE, RANDOM, "Rock")
+temporary_main(YEAR, TOP, 2015)

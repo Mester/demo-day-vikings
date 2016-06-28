@@ -1,8 +1,7 @@
 import os
 import binascii
 
-from my_app.main import app
-from my_app import settings
+from my_app import app, settings
 
 if __name__ == '__main__':
     app.debug = True

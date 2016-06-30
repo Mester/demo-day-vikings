@@ -133,7 +133,7 @@ def save_JSON_data(JSON_list): #TODO: More descriptive name
                 try:            
                     all_song_posts.append(Post.create_from_post_JSON(post))
                 except:
-                    print(post["data"]["title"])
+                    # print(post["data"]["title"])
                     # Count songs that have formatting errors
                     omit_count += 1
                 # Count songs that are successfully received
@@ -243,21 +243,24 @@ def get_10_songs(list_type): #TODO: more descriptive name
     Keyword arguments:
     list_type -- user can select how songs are sorted: RECENT, TOP, RANDOM (HOT to be added)
     """
-    if list_type == RECENT:
+
+    sorted_song_list = []
+
+    if list_type == RECENT or list_type.lower() == "recent":
         # Sort songs by RECENT first and print them out
         selected_songs.sort(key=lambda x: x.timestamp, reverse=True)
-        for i in range(10):
-            if i == len(selected_songs):
-                break
-            print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title + " " + str(selected_songs[i].timestamp))
-    elif list_type == TOP:
+        for i in range(min(10, len(selected_songs))):
+            sorted_song_list.append(selected_songs[i])
+        return sorted_song_list
+            # print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title + " " + str(selected_songs[i].timestamp))
+    elif list_type == TOP or list_type.lower() == "top":
         # Sort songs by TOP first and print them out
         selected_songs.sort(key=lambda x: x.score, reverse=True)
-        for i in range(10):
-            if i == len(selected_songs):
-                break
-            print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title + " " + str(selected_songs[i].score))
-    elif list_type == RANDOM:
+        for i in range(min(10, len(selected_songs))):
+            sorted_song_list.append(selected_songs[i])
+        return sorted_song_list
+            # print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title + " " + str(selected_songs[i].score))
+    elif list_type == RANDOM or list_type.lower() == "random":
         # Sort songs randomly and print them out
         # Create a random list of 10 indexes (if possible) and print out songs from the list using them
         random_index_list = []
@@ -266,13 +269,15 @@ def get_10_songs(list_type): #TODO: more descriptive name
             if temp_idx not in random_index_list:
                 random_index_list.append(temp_idx)
         for i in random_index_list:
-            print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title)
+            sorted_song_list.append(selected_songs[i])
+        return sorted_song_list
+            # print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title)
     else:
         # add assertion here or something
-        print("Error: invalid list type")
+        print("Error: invalid list type: ", list_type)
 
 
-def temporary_main(search_type, sort_type, search_term):
+def get_songs(search_type, sort_type, search_term):
     """Temporary main function to run all code
 
     Keyword arguments:
@@ -294,10 +299,11 @@ def temporary_main(search_type, sort_type, search_term):
     else:
         raise Exception("Invalid Search Type") # TODO: better error handling
     # print_song_info(selected_songs)
-    get_10_songs(sort_type)
+    song_list = get_10_songs(sort_type)
+    return song_list
 
 token = access_token()
 
 # TRY IT OUT! 
-# temporary_main(GENRE, RANDOM, "Rock")
-temporary_main(YEAR, TOP, 2015)
+# get_songs(GENRE, RANDOM, "Rock")
+# get_songs(YEAR, TOP, 2015)

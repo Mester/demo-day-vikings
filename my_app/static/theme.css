@@ -26,3 +26,12 @@ body {
     width: 50%;
     text-align: center;
 }
+
+.custom-pick-genre .btn {
+  color: black;
+  font-weight: bold;
+}
+
+#search_bar input {
+  display: inline-block;
+}

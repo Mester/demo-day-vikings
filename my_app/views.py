@@ -1,22 +1,31 @@
 import os
 import markdown
-from flask import Flask, render_template
+from api_access import get_songs
+from flask import Flask, render_template, request
 from flask import Markup
-from my_app import app
+from my_app import app, api_access
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    #show search params: genre (maybe year), filter (hot, top, random, new)
-    #redirect to results page
+    if request.method == 'POST':
+        search_term = formatName(request.form['search_term'])
+        sort_type = formatName(request.form['sort_type'])
+        song_list = get_songs(api_access.GENRE, sort_type, search_term)
+        return redirect(url_for('show_results', song_list=song_list))
     return render_template('index.html')
 
-#mock
-@app.route('/list/<genre>/<filter>')
-def show_results():
-    #next_listing()
-    #other data handling
-    return render_template('results.html')
+
+@app.route('/list/<search_term>/<sort_type>', methods=['POST', 'GET'])
+def show_results(search_term, sort_type):
+    if request.method == 'POST':
+        search_term = formatName(request.form['search_term'])
+        sort_type = formatName(request.form['sort_type'])
+        song_list = get_songs(api_access.GENRE, sort_type, search_term)
+        return redirect(url_for('show_results', song_list=song_list))
+    song_list = get_songs(api_access.GENRE, sort_type, search_term)
+    return render_template('results.html', song_list=song_list)
+
 
 @app.route('/about')
 def show_about():

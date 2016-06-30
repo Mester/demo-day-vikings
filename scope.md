@@ -30,15 +30,15 @@ Electrical Engineer changing careers to programming in the interest of learning 
 
 Let's build something cool. Currently unemployed. 
 
-[Github] (https://github.com/tylerphillips55)
+[Github](https://github.com/tylerphillips55)
 
-[Linkedin] (https://www.linkedin.com/in/tyler-phillips-84481044)
+[Linkedin](https://www.linkedin.com/in/tyler-phillips-84481044)
 
 ##### Anubhav Yadav
 
 A Computer Engineer with a passion for travel. Author of scorer.py. Strong Knowledge of the *Internet Of Things* domain with a solid knack of developing products for the infotainment Industry. Good understanding of linux operation system, revision control systems and a varied range of technology hands on experience. 
 
-[Github] (https://github.com/neo1691)
+[Github](https://github.com/neo1691)
 
 #### *Short description of your app.* What’s going to do? What’s problem is going to solve?
 

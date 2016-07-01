@@ -93,7 +93,7 @@ class Post:
         return post_object
 
 
-def save_JSON_data(JSON_list): #TODO: More descriptive name
+def save_JSON_data(json): #TODO: More descriptive name
     """Creates post objects from JSON data and calculates statistics from processing 
 
     Keyword arguments:
@@ -117,7 +117,7 @@ def save_JSON_data(JSON_list): #TODO: More descriptive name
     #         else:
     #             # Count songs that don't have media data (no link to song)
     #             other_count += 1
-    for post in JSON_list['data']['children']:
+    for post in json['data']['children']:
         if post['data']['media'] != None:
             try:
                 all_song_posts.append(Post.create_from_post_JSON(post))
@@ -312,4 +312,3 @@ def get_songs(search_type, sort_type, search_term):
 # get_songs(GENRE, RANDOM, "Rock")
 # get_songs(YEAR, TOP, 2015)
 
-# pp(get_list_from_API(sort_type=HOT, limit=100))

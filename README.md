@@ -32,7 +32,7 @@ Electrical Engineer changing careers to programming in the interest of learning 
 
 ##### Tyler Phillips
 
-Let's build something cool. Currently unemployed. 
+Recent graduate with degrees in Operations Research and Economics. Interested in startups. 
 
 [Github](https://github.com/tylerphillips55)
 

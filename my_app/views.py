@@ -31,5 +31,4 @@ def show_results(search_term, sort_type):
 def show_about():
     with open('README.md') as f:
         readme = Markup(markdown.markdown(f.read()))
-        print readme
     return render_template('about.html', readme=readme)

@@ -91,3 +91,6 @@ config.py
 
 # pycharm
 .idea
+
+# mac 
+.DS_Store

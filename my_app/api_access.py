@@ -19,7 +19,7 @@ YEAR = 1
 
 
 
-selected_songs = []
+
 
 
 # TO DO:
@@ -29,6 +29,10 @@ selected_songs = []
 # Create function to scrub user input genre type to remove all bad characters (just alphanumeric and spaces allowed probably)
 # Store stuff in database to reduce request time? The songs dont seem to change too much when we go back as far as we do
 # Make sure no duplicates in database
+# Clean up HTML
+# Remove extra normal dash showing up in artist by updating regex
+# Add functionality to search by year to HTML code
+# Convert timestamp to a Date
 
 
 
@@ -133,7 +137,7 @@ def save_JSON_data(JSON_list): #TODO: More descriptive name
                 try:            
                     all_song_posts.append(Post.create_from_post_JSON(post))
                 except:
-                    print(post["data"]["title"])
+                    # print(post["data"]["title"])
                     # Count songs that have formatting errors
                     omit_count += 1
                 # Count songs that are successfully received
@@ -213,13 +217,17 @@ def search_genre(all_song_posts, genre):
     Keyword arguments:
     genre -- The genre to be searched for
     """
+
+    matching_songs = []
+
     genre_count = 0
     print("#######################")
     for song in all_song_posts:
         if genre.lower() in song.genre.lower():
             genre_count += 1
-            selected_songs.append(song)
-    print(str(genre_count) + " songs found for " + genre + " genre were stored in selected_songs list.")
+            matching_songs.append(song)
+    print(str(genre_count) + " songs found for " + genre + " genre were stored in matching_songs list.")
+    return matching_songs
 
 
 def search_year(all_song_posts, year):
@@ -228,51 +236,61 @@ def search_year(all_song_posts, year):
     Keyword arguments:
     year -- The year to be searched for
     """
+
+    matching_songs = []
+
     year_count = 0
     print("#######################")
     for song in all_song_posts:
         if str(year) in str(song.year):
             year_count += 1
-            selected_songs.append(song)
-    print(str(year_count) + " songs found for the year " + str(year) + " were stored in selected_songs list.")
+            matching_songs.append(song)
+    print(str(year_count) + " songs found for the year " + str(year) + " were stored in matching_songs list.")
+    return matching_songs
 
 
-def get_10_songs(list_type): #TODO: more descriptive name
+def get_10_songs(list_type, matching_songs): #TODO: more descriptive name
     """Pulls 10 songs from the list of songs user selected (genre or year)
 
     Keyword arguments:
     list_type -- user can select how songs are sorted: RECENT, TOP, RANDOM (HOT to be added)
+    matching_songs -- songs that match user entered genre or year
     """
-    if list_type == RECENT:
+
+    sorted_song_list = []
+
+    if list_type == RECENT or list_type.lower() == "recent":
         # Sort songs by RECENT first and print them out
-        selected_songs.sort(key=lambda x: x.timestamp, reverse=True)
-        for i in range(10):
-            if i == len(selected_songs):
-                break
-            print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title + " " + str(selected_songs[i].timestamp))
-    elif list_type == TOP:
+        matching_songs.sort(key=lambda x: x.timestamp, reverse=True)
+        for i in range(min(10, len(matching_songs))):
+            sorted_song_list.append(matching_songs[i])
+        return sorted_song_list
+            # print(str(i + 1) + " " + matching_songs[i].artist + " - " + matching_songs[i].title + " " + str(matching_songs[i].timestamp))
+    elif list_type == TOP or list_type.lower() == "top":
         # Sort songs by TOP first and print them out
-        selected_songs.sort(key=lambda x: x.score, reverse=True)
-        for i in range(10):
-            if i == len(selected_songs):
-                break
-            print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title + " " + str(selected_songs[i].score))
-    elif list_type == RANDOM:
+        matching_songs.sort(key=lambda x: x.score, reverse=True)
+        for i in range(min(10, len(matching_songs))):
+            sorted_song_list.append(matching_songs[i])
+        return sorted_song_list
+            # print(str(i + 1) + " " + matching_songs[i].artist + " - " + matching_songs[i].title + " " + str(matching_songs[i].score))
+    elif list_type == RANDOM or list_type.lower() == "random":
         # Sort songs randomly and print them out
         # Create a random list of 10 indexes (if possible) and print out songs from the list using them
         random_index_list = []
-        while len(random_index_list) <= 10 and len(random_index_list) != len(selected_songs):
-            temp_idx = random.randint(0,len(selected_songs) - 1)
+        while len(random_index_list) <= 10 and len(random_index_list) != len(matching_songs):
+            temp_idx = random.randint(0,len(matching_songs) - 1)
             if temp_idx not in random_index_list:
                 random_index_list.append(temp_idx)
         for i in random_index_list:
-            print(str(i + 1) + " " + selected_songs[i].artist + " - " + selected_songs[i].title)
+            sorted_song_list.append(matching_songs[i])
+        return sorted_song_list
+            # print(str(i + 1) + " " + matching_songs[i].artist + " - " + matching_songs[i].title)
     else:
         # add assertion here or something
-        print("Error: invalid list type")
+        print("Error: invalid list type: ", list_type)
 
 
-def temporary_main(search_type, sort_type, search_term):
+def get_songs(search_type, sort_type, search_term):
     """Temporary main function to run all code
 
     Keyword arguments:
@@ -283,21 +301,29 @@ def temporary_main(search_type, sort_type, search_term):
 
     # Hardcoding it to have the reddit API search from HOT, TOP does not return 1000 results. RECENT would be okay too
     # Might want to search HOT normally, but use RECENT for our RECENT list
+
+
+    # Need to empty the lists or we get duplicate results if they keep searching, probably a nicer way to do this...
+    # all_song_posts = []
+    # matching_songs = []
+    # song_list = []
+
     JSON_list = get_list_from_API(HOT)
     all_song_posts, song_count, omit_count, other_count = save_JSON_data(JSON_list)
     # print_song_info(all_song_posts)
     print_song_statistics(song_count, omit_count, other_count)
     if search_type == GENRE:
-        search_genre(all_song_posts, search_term)
+        matching_songs = search_genre(all_song_posts, search_term)
     elif search_type == YEAR:
-        search_year(all_song_posts, search_term)
+        matching_songs = search_year(all_song_posts, search_term)
     else:
         raise Exception("Invalid Search Type") # TODO: better error handling
-    # print_song_info(selected_songs)
-    get_10_songs(sort_type)
+    # print_song_info(matching_songs)
+    song_list = get_10_songs(sort_type, matching_songs)
+    return song_list
 
 token = access_token()
 
 # TRY IT OUT! 
-# temporary_main(GENRE, RANDOM, "Rock")
-temporary_main(YEAR, TOP, 2015)
+# get_songs(GENRE, RANDOM, "Rock")
+# get_songs(YEAR, TOP, 2015)

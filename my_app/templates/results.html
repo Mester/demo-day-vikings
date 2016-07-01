@@ -1,18 +1,37 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "search.html" %}
+{% block results %}
 <!-- This is all placeholder stuff. -->
 
 <h1>Enjoy this timeless music, if that's your thing or whatever.</h1>
 <br>
-{% if results %}
-    <ul>
-    {% for result in results %}
-    <!-- We'll want to get attributes of result and format them
-                            when we know what results looks like-->
-        <div><li>{{ result }}</li></div>
+{% if song_list %}
+<table>
+  <thead>
+    <tr>
+      <th>Thumbnail</th>
+      <th>Artist</th>
+      <th>Song Title</th>
+      <th>Genre</th>
+      <th>Year</th>
+      <th>Upvotes</th>
+      <th>Post Date</th>
+    </tr>
+  </thead>
 
-    {% endfor %}
-    </ul>
+  <tbody>
+  {% for song in song_list %}
+    <tr>
+      <td><a href="{{ song.url }}"><img src="{{ song.thumbnail }}" alt="some_text"/></a></td>
+      <td>{{ song.artist }}</td>
+      <td>{{ song.title }}</td>
+      <td>{{ song.genre }}</td>
+      <td>{{ song.year }}</td>
+      <td>{{ song.score }}</td>
+      <td>{{ song.timestamp }}</td>
+    </tr>
+  {% endfor %}   
+  </tbody>
+<table>
 {% endif %}
 
 {% endblock %}

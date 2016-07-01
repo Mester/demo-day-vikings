@@ -92,33 +92,33 @@ class Post:
         
         return post_object
 
-def access_token():
-    """
-    Returns OAuth access token
-    """
-    data = {'grant_type': 'client_credentials'}
-    headers = {'User-Agent': 'ChangeMeClient/0.1 by YourUsername'}
-    for _ in range(5):
-        try:
-            r = requests.post("https://www.reddit.com/api/v1/access_token", auth=(config.CLIENT_ID,
-                                                                                  config.CLIENT_SECRET), data=data,
-                              headers=headers, timeout=(3.05, 20))
-            r.raise_for_status()
-            break
-        except (requests.ConnectionError, requests.Timeout):
-            continue
-        except requests.HTTPError:
-            if r.status_code == 401:
-                print("INVALID CLIENT CREDENTIALS: Please verify that you are properly sending HTTP Basic "
-                      "Authorization headers and that the client's credentials are correct")
-                break
-            else:
-                r.raise_for_status()
-        except requests.RequestException as e:
-            print(e)
-            sys.exit(1)
-    token = r.json()['access_token']
-    return token
+# def access_token():
+#     """
+#     Returns OAuth access token
+#     """
+#     data = {'grant_type': 'client_credentials'}
+#     headers = {'User-Agent': 'ChangeMeClient/0.1 by YourUsername'}
+#     for _ in range(5):
+#         try:
+#             r = requests.post("https://www.reddit.com/api/v1/access_token", auth=(config.CLIENT_ID,
+#                                                                                   config.CLIENT_SECRET), data=data,
+#                               headers=headers, timeout=(3.05, 20))
+#             r.raise_for_status()
+#             break
+#         except (requests.ConnectionError, requests.Timeout):
+#             continue
+#         except requests.HTTPError:
+#             if r.status_code == 401:
+#                 print("INVALID CLIENT CREDENTIALS: Please verify that you are properly sending HTTP Basic "
+#                       "Authorization headers and that the client's credentials are correct")
+#                 break
+#             else:
+#                 r.raise_for_status()
+#         except requests.RequestException as e:
+#             print(e)
+#             sys.exit(1)
+#     token = r.json()['access_token']
+#     return token
 
 
 def save_JSON_data(JSON_list): #TODO: More descriptive name
@@ -154,12 +154,10 @@ def get_list_from_API(sort_type=HOT):
     Keyword arguments:
     sort_type -- determines type of API request - HOT, RECENT, TOP, or RANDOM valid
     """
-
-    headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
-    
-    # For the initial request we don't have pagination information so have to do a different request
-    r = requests.get("https://oauth.reddit.com/r/ListenToThis/" + sort_type + ".json?limit=100", headers=headers)
+    headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
+    r = requests.get("https://www.reddit.com/r/ListenToThis" + sort_type + ".json?limit=100", headers=headers)
     if r.ok:
+        pp(r.json())
         JSON_list = []
         before = r.json()['data']['before']
         after = r.json()['data']['after']
@@ -322,8 +320,15 @@ def get_songs(search_type, sort_type, search_term):
     song_list = get_10_songs(sort_type, matching_songs)
     return song_list
 
-token = access_token()
+# token = access_token()
 
 # TRY IT OUT! 
 # get_songs(GENRE, RANDOM, "Rock")
 # get_songs(YEAR, TOP, 2015)
+
+# get_list_from_API()
+headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
+r = requests.get("https://www.reddit.com/r/ListenToThis/hot.json?limit=3", headers=headers)
+# sort_type = 'hot'
+# r = requests.get("https://www.reddit.com/r/ListenToThis" + sort_type + ".json?limit=3", headers=headers)
+pp(r.json())

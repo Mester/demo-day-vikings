@@ -92,34 +92,6 @@ class Post:
         
         return post_object
 
-# def access_token():
-#     """
-#     Returns OAuth access token
-#     """
-#     data = {'grant_type': 'client_credentials'}
-#     headers = {'User-Agent': 'ChangeMeClient/0.1 by YourUsername'}
-#     for _ in range(5):
-#         try:
-#             r = requests.post("https://www.reddit.com/api/v1/access_token", auth=(config.CLIENT_ID,
-#                                                                                   config.CLIENT_SECRET), data=data,
-#                               headers=headers, timeout=(3.05, 20))
-#             r.raise_for_status()
-#             break
-#         except (requests.ConnectionError, requests.Timeout):
-#             continue
-#         except requests.HTTPError:
-#             if r.status_code == 401:
-#                 print("INVALID CLIENT CREDENTIALS: Please verify that you are properly sending HTTP Basic "
-#                       "Authorization headers and that the client's credentials are correct")
-#                 break
-#             else:
-#                 r.raise_for_status()
-#         except requests.RequestException as e:
-#             print(e)
-#             sys.exit(1)
-#     token = r.json()['access_token']
-#     return token
-
 
 def save_JSON_data(JSON_list): #TODO: More descriptive name
     """Creates post objects from JSON data and calculates statistics from processing 
@@ -131,52 +103,67 @@ def save_JSON_data(JSON_list): #TODO: More descriptive name
     omit_count = 0
     other_count = 0
     all_song_posts = []
-    for JSON_data in JSON_list:
-        for post in JSON_data['data']['children']:
-            if post['data']['media'] != None:
-                try:            
-                    all_song_posts.append(Post.create_from_post_JSON(post))
-                except:
-                    # print(post["data"]["title"])
-                    # Count songs that have formatting errors
-                    omit_count += 1
-                # Count songs that are successfully received
-                song_count += 1
-            else: 
-                # Count songs that don't have media data (no link to song)
-                other_count += 1
+    # for JSON_data in JSON_list:
+    #     for post in JSON_data['data']['children']:
+    #         if post['data']['media'] != None:
+    #             try:
+    #                 all_song_posts.append(Post.create_from_post_JSON(post))
+    #             except:
+    #                 # print(post["data"]["title"])
+    #                 # Count songs that have formatting errors
+    #                 omit_count += 1
+    #             # Count songs that are successfully received
+    #             song_count += 1
+    #         else:
+    #             # Count songs that don't have media data (no link to song)
+    #             other_count += 1
+    for post in JSON_list['data']['children']:
+        if post['data']['media'] != None:
+            try:
+                all_song_posts.append(Post.create_from_post_JSON(post))
+            except:
+                # print(post["data"]["title"])
+                # Count songs that have formatting errors
+                omit_count += 1
+            # Count songs that are successfully received
+            song_count += 1
+        else:
+            # Count songs that don't have media data (no link to song)
+            other_count += 1
     return all_song_posts, song_count, omit_count, other_count
 
 
-def get_list_from_API(sort_type=HOT):
+def get_list_from_API(sort_type=HOT, limit=1000):
     """Get a list of song data from Reddit API , usually around 1000 posts are gotten
 
     Keyword arguments:
     sort_type -- determines type of API request - HOT, RECENT, TOP, or RANDOM valid
     """
     headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
-    r = requests.get("https://www.reddit.com/r/ListenToThis" + sort_type + ".json?limit=100", headers=headers)
-    if r.ok:
-        pp(r.json())
-        JSON_list = []
-        before = r.json()['data']['before']
-        after = r.json()['data']['after']
-        JSON_list.append(r.json())
-
-        # Now we have "after" data to page through the reddit API data
-        while after != None:
-            r = requests.get("https://oauth.reddit.com/r/ListenToThis/" + sort_type + ".json?limit=100&after=" + after, headers=headers)
-            if r.ok:
-                before = r.json()['data']['before']
-                after = r.json()['data']['after']
-                JSON_list.append(r.json())
-            else: 
-                print("Request fail")
-                break
-        return JSON_list
-    else:
-        print("Request fail")
-       
+    r = requests.get("https://www.reddit.com/r/ListenToThis/{0}.json?limit={1}".format(sort_type, limit),
+                     headers=headers)
+    # if r.ok:
+    #     JSON_list = []
+    #     before = r.json()['data']['before']
+    #     after = r.json()['data']['after']
+    #     JSON_list.append(r.json())
+    #
+    #     # Now we have "after" data to page through the reddit API data
+    #     while after != None:
+    #         r = requests.get("https://www.reddit.com/r/ListenToThis/{0}.json?limit={1}".format(sort_type, limit),
+    #                          headers=headers)
+    #         if r.ok:
+    #             before = r.json()['data']['before']
+    #             after = r.json()['data']['after']
+    #             JSON_list.append(r.json())
+    #         else:
+    #             print("Request fail")
+    #             break
+    #     return JSON_list
+    return r.json()
+    # else:
+    #     print("Request fail")
+    #
 
 def print_song_info(song_list):
     """Debug function that outputs song information
@@ -320,15 +307,9 @@ def get_songs(search_type, sort_type, search_term):
     song_list = get_10_songs(sort_type, matching_songs)
     return song_list
 
-# token = access_token()
 
 # TRY IT OUT! 
 # get_songs(GENRE, RANDOM, "Rock")
 # get_songs(YEAR, TOP, 2015)
 
-# get_list_from_API()
-headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
-r = requests.get("https://www.reddit.com/r/ListenToThis/hot.json?limit=3", headers=headers)
-# sort_type = 'hot'
-# r = requests.get("https://www.reddit.com/r/ListenToThis" + sort_type + ".json?limit=3", headers=headers)
-pp(r.json())
+# pp(get_list_from_API(sort_type=HOT, limit=100))

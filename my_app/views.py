@@ -1,6 +1,6 @@
 import os
 import markdown
-from api_access import get_songs
+from my_app.api_access import get_songs
 from flask import Flask, render_template, request
 from flask import Markup
 from my_app import app, api_access
@@ -31,5 +31,5 @@ def show_results(search_term, sort_type):
 def show_about():
     with open('README.md') as f:
         readme = Markup(markdown.markdown(f.read()))
-        print readme
+        print(readme)
     return render_template('about.html', readme=readme)

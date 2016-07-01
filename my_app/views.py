@@ -9,20 +9,20 @@ from my_app import app, api_access
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        search_term = formatName(request.form['search_term'])
-        sort_type = formatName(request.form['sort_type'])
+        search_term = request.form['search_term']
+        sort_type = request.form['sort_type']
         song_list = get_songs(api_access.GENRE, sort_type, search_term)
-        return redirect(url_for('show_results', song_list=song_list))
-    return render_template('index.html')
+        return render_template('results.html', song_list=song_list)
+    return render_template('search.html')
 
 
 @app.route('/list/<search_term>/<sort_type>', methods=['POST', 'GET'])
 def show_results(search_term, sort_type):
     if request.method == 'POST':
-        search_term = formatName(request.form['search_term'])
-        sort_type = formatName(request.form['sort_type'])
+        search_term = request.form['search_term']
+        sort_type = request.form['sort_type']
         song_list = get_songs(api_access.GENRE, sort_type, search_term)
-        return redirect(url_for('show_results', song_list=song_list))
+        return render_template('results.html', song_list=song_list)
     song_list = get_songs(api_access.GENRE, sort_type, search_term)
     return render_template('results.html', song_list=song_list)
 

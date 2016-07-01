@@ -7,13 +7,6 @@
       <div class="col-lg-6 col-lg-offset-3">
         <div class="input-group input-group-lg">
 
-<!--             <form role="form" action="" method="POST">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button"><strong>Search</strong></button>
-            </span>
-            <input type="text" class="form-control" name="search_term" placeholder="Alternative">
-          </form> -->
-
           <form role="form" action="" method="POST">
             <div class="form-group">
               <div id="search_bar">
@@ -23,20 +16,22 @@
                 </span>
               </div>
               <label class="radio-inline">
-                <input type="radio" name="sort_type" value="TOP" checked> Top
+                <input type="radio" name="sort_type" value="TOP"> Top
               </label>
               <label class="radio-inline">
                 <input type="radio" name="sort_type" value="RECENT"> Recent
               </label>
               <label class="radio-inline">
-                <input type="radio" name="sort_type" value="RANDOM"> Random
+                <input type="radio" name="sort_type" value="RANDOM" checked> Random
               </label>
             </div>
           </form>
-
         </div><!-- /input-group -->
-    </div>
-  </div><!-- /.col-lg-6 -->
+    </div><!-- /.col-lg-6 -->
+  </div><!-- row -->
 </div> <!-- /custom-pick-genre -->
+
+{% block results %}
+{% endblock %}
 
 {% endblock %}

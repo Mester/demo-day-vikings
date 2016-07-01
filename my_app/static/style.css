@@ -35,3 +35,8 @@ body {
 #search_bar input {
   display: inline-block;
 }
+
+table, td, th {
+  border: solid 2px black;
+  padding: 10px;
+}

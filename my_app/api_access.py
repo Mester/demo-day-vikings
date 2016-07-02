@@ -93,7 +93,7 @@ class Post:
         return post_object
 
 
-def save_JSON_data(json): #TODO: More descriptive name
+def save_JSON_data(JSON_list): #TODO: More descriptive name
     """Creates post objects from JSON data and calculates statistics from processing 
 
     Keyword arguments:
@@ -103,33 +103,20 @@ def save_JSON_data(json): #TODO: More descriptive name
     omit_count = 0
     other_count = 0
     all_song_posts = []
-    # for JSON_data in JSON_list:
-    #     for post in JSON_data['data']['children']:
-    #         if post['data']['media'] != None:
-    #             try:
-    #                 all_song_posts.append(Post.create_from_post_JSON(post))
-    #             except:
-    #                 # print(post["data"]["title"])
-    #                 # Count songs that have formatting errors
-    #                 omit_count += 1
-    #             # Count songs that are successfully received
-    #             song_count += 1
-    #         else:
-    #             # Count songs that don't have media data (no link to song)
-    #             other_count += 1
-    for post in json['data']['children']:
-        if post['data']['media'] != None:
-            try:
-                all_song_posts.append(Post.create_from_post_JSON(post))
-            except:
-                # print(post["data"]["title"])
-                # Count songs that have formatting errors
-                omit_count += 1
-            # Count songs that are successfully received
-            song_count += 1
-        else:
-            # Count songs that don't have media data (no link to song)
-            other_count += 1
+    for JSON_data in JSON_list:
+        for post in JSON_data['data']['children']:
+            if post['data']['media'] != None:
+                try:
+                    all_song_posts.append(Post.create_from_post_JSON(post))
+                except:
+                    # print(post["data"]["title"])
+                    # Count songs that have formatting errors
+                    omit_count += 1
+                # Count songs that are successfully received
+                song_count += 1
+            else:
+                # Count songs that don't have media data (no link to song)
+                other_count += 1
     return all_song_posts, song_count, omit_count, other_count
 
 
@@ -140,30 +127,30 @@ def get_list_from_API(sort_type=HOT, limit=1000):
     sort_type -- determines type of API request - HOT, RECENT, TOP, or RANDOM valid
     """
     headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
-    r = requests.get("https://www.reddit.com/r/ListenToThis/{0}.json?limit={1}".format(sort_type, limit),
+    r = requests.get("https://www.reddit.com/r/ListenToThis/{0}.json?limit=100".format(sort_type),
                      headers=headers)
-    # if r.ok:
-    #     JSON_list = []
-    #     before = r.json()['data']['before']
-    #     after = r.json()['data']['after']
-    #     JSON_list.append(r.json())
-    #
-    #     # Now we have "after" data to page through the reddit API data
-    #     while after != None:
-    #         r = requests.get("https://www.reddit.com/r/ListenToThis/{0}.json?limit={1}".format(sort_type, limit),
-    #                          headers=headers)
-    #         if r.ok:
-    #             before = r.json()['data']['before']
-    #             after = r.json()['data']['after']
-    #             JSON_list.append(r.json())
-    #         else:
-    #             print("Request fail")
-    #             break
-    #     return JSON_list
-    return r.json()
-    # else:
-    #     print("Request fail")
-    #
+    if r.ok:
+        JSON_list = []
+        before = r.json()['data']['before']
+        after = r.json()['data']['after']
+        JSON_list.append(r.json())
+
+        # Now we have "after" data to page through the reddit API data
+        while after != None:
+            r = requests.get("https://www.reddit.com/r/ListenToThis/{0}.json?limit=100&after={1}".format(sort_type,
+                                                                                                       after),
+                             headers=headers)
+            if r.ok:
+                before = r.json()['data']['before']
+                after = r.json()['data']['after']
+                JSON_list.append(r.json())
+            else:
+                print("Request fail")
+                break
+        return JSON_list
+    else:
+        print("Request fail")
+
 
 def print_song_info(song_list):
     """Debug function that outputs song information
@@ -308,25 +295,6 @@ def get_songs(search_type, sort_type, search_term):
     return song_list
 
 
-# TRY IT OUT! 
+# TRY IT OUT!
 # get_songs(GENRE, RANDOM, "Rock")
 # get_songs(YEAR, TOP, 2015)
-
-ls = []
-d = get_list_from_API(sort_type='hot')
-after = d['data']['after']
-before = d['data']['before']
-ls.extend(d['data']['children'])
-c = 0
-while c <= 8:
-    i = get_list_from_API(sort_type='hot')
-    after = i['data']['after']
-    before = i['data']['before']
-    ls.extend(i['data']['children'])
-    c+=1
-times = []
-for thing in ls:
-    times.append(thing['data']['created_utc'])
-    times.sort(reverse=True)
-pp(times)
-print(len(times))

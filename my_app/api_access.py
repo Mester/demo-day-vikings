@@ -312,3 +312,21 @@ def get_songs(search_type, sort_type, search_term):
 # get_songs(GENRE, RANDOM, "Rock")
 # get_songs(YEAR, TOP, 2015)
 
+ls = []
+d = get_list_from_API(sort_type='hot')
+after = d['data']['after']
+before = d['data']['before']
+ls.extend(d['data']['children'])
+c = 0
+while c <= 8:
+    i = get_list_from_API(sort_type='hot')
+    after = i['data']['after']
+    before = i['data']['before']
+    ls.extend(i['data']['children'])
+    c+=1
+times = []
+for thing in ls:
+    times.append(thing['data']['created_utc'])
+    times.sort(reverse=True)
+pp(times)
+print(len(times))

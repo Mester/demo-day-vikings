@@ -9,10 +9,10 @@ test:
 
 test-cov:
 	@echo $(TAG)Running tests with coverage$(END)
-	PYTHONPATH=. py.test --cov=my_app tests
+	PYTHONPATH=. py.test --cov=music_app tests
 
 coverage:
 	@echo $(TAG)Coverage report$(END)
-	@PYTHONPATH=. coverage run --source=my_app $(shell which py.test) ./tests -q --tb=no >/dev/null; true
+	@PYTHONPATH=. coverage run --source=music_app $(shell which py.test) ./tests -q --tb=no >/dev/null; true
 	@coverage report
 

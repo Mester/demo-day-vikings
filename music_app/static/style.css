@@ -23,8 +23,8 @@ body {
     border-radius: 10px;
     padding: 0px 10px 10px 10px;
     margin: 0 auto;
-    width: 50%;
     text-align: center;
+    width: 70%;
 }
 
 .custom-pick-genre .btn {
@@ -32,11 +32,52 @@ body {
   font-weight: bold;
 }
 
-#search_bar input {
-  display: inline-block;
+
+.search-bar {
+  padding-top: 10px;
+  margin: 0 auto;
 }
 
-table, td, th {
-  border: solid 2px black;
-  padding: 10px;
+.search-bar input {
+  width: 300px;
+  margin: 0;
+  display: inline;
+  border: 0px 1px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
+
+.search-bar button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin: 0px 0px 3px -4px;
+  border: 2px 1px 0px 1px;
+}
+
+.radio-buttons {
+  padding: 10px 3px;
+}
+
+table { margin: 0 auto; }
+
+table, td, th {
+  padding: 25px;
+}
+
+td img {
+  text-align: center;
+}
+
+tr {
+  padding-bottom: 20px;
+}
+
+td ul {
+  list-style-type:none;
+  padding-left: 0px;
+}
+
+td li {
+  padding: 5px;
+}
+

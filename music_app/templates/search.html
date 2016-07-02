@@ -2,33 +2,26 @@
 {% block content %}
 <!-- This is all placeholder stuff. -->
 
-<div class="custom-pick-genre"><h1>Pick a Genre.<br/>Get Some Music.&#8482</h1>
-  <div class="row">
-      <div class="col-lg-6 col-lg-offset-3">
-        <div class="input-group input-group-lg">
-
-          <form role="form" action="" method="POST">
-            <div class="form-group">
-              <div id="search_bar">
-                <input type="text" class="form-control" name="search_term" placeholder="ex: Alternative">
-                <span class="input-group-btn">
-                  <button type="submit" class="btn btn-submit">Search</button>
-                </span>
-              </div>
-              <label class="radio-inline">
-                <input type="radio" name="sort_type" value="TOP"> Top
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="sort_type" value="RECENT"> Recent
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="sort_type" value="RANDOM" checked> Random
-              </label>
-            </div>
-          </form>
-        </div><!-- /input-group -->
-    </div><!-- /.col-lg-6 -->
-  </div><!-- row -->
+<div class="custom-pick-genre"><h1>Pick a Genre. Get Some Music.&#8482</h1>
+    <form role="form" action="" method="POST">
+      <div class="form-group">
+        <div class="search-bar">
+          <input type="text" class="form-control" name="search_term" placeholder="ex: Alternative">
+          <button type="submit" class="btn btn-submit">Search</button>
+        </div>
+        <div class="radio-buttons">
+          <label class="radio-inline">
+            <input type="radio" name="sort_type" value="TOP"> Top
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="sort_type" value="RECENT"> Recent
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="sort_type" value="RANDOM" checked> Random
+          </label>
+        </div>
+      </div>
+    </form>
 </div> <!-- /custom-pick-genre -->
 
 {% block results %}

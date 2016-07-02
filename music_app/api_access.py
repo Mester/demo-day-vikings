@@ -4,7 +4,9 @@ import logging
 import requests
 import re
 import random
-from music_app import utils
+from tinydb import TinyDB, Query
+from music_app import utils, database
+
 
 
 
@@ -40,7 +42,7 @@ class Post:
     @classmethod
     def create_from_post_JSON(cls, post_json):
         """Create a Post object from the post's JSON
-    
+
         Keyword arguments:
         post_title -- the post title
         """
@@ -59,38 +61,38 @@ class Post:
                 \)              # Skip closing parenthesis
                     """, re.VERBOSE | re.IGNORECASE)
         m = p.search(post_title)
-        
+
         if m.group("artist"):
             post_object.artist = m.group("artist")
         else:
             raise Exception("Poor artist formatting") # TODO: better error handling
-            
+
         if m.group("title"):
             post_object.title = m.group("title")
         else:
             raise Exception("Poor title formatting.") # TODO: better error handling
-            
+
         if m.group("genre"):
             post_object.genre = m.group("genre")
         else:
             raise Exception("Poor genre formatting.") # TODO: better error handling
-            
+
         if m.group("year"):
             post_object.year = m.group("year")
         else:
             raise Exception("Poor year formatting") # TODO: better error handling
-        
+
         # Get the rest of the data from json info
         post_object.score = post_json['data']['score']
         post_object.url = post_json['data']['url']
         post_object.timestamp = post_json['data']['created_utc']
         post_object.thumbnail = post_json['data']['thumbnail']
-        
+
         return post_object
 
 
 def save_JSON_data(JSON_list): #TODO: More descriptive name
-    """Creates post objects from JSON data and calculates statistics from processing 
+    """Creates post objects from JSON data and calculates statistics from processing
 
     Keyword arguments:
     jsonData -- data from the API request
@@ -139,13 +141,13 @@ def get_list_from_API(sort_type=HOT, limit=1000):
                 before = r.json()['data']['before']
                 after = r.json()['data']['after']
                 JSON_list.append(r.json())
-            else: 
+            else:
                 logger.debug("Request fail")
                 break
         return JSON_list
     else:
         logger.debug("Request fail")
-       
+
 
 def log_song_info(song_list):
     """Debug function that outputs song information
@@ -274,6 +276,9 @@ def get_songs(search_type, sort_type, search_term):
 
     JSON_list = get_list_from_API(HOT)
     all_song_posts, song_count, omit_count, other_count = save_JSON_data(JSON_list)
+
+    database.db.insert_multiple(all_song_posts)
+
     log_song_statistics(song_count, omit_count, other_count)
     if search_type == GENRE:
         matching_songs = search_genre(all_song_posts, search_term)
@@ -286,6 +291,6 @@ def get_songs(search_type, sort_type, search_term):
 
 
 
-# TRY IT OUT! 
+# TRY IT OUT!
 # get_songs(GENRE, RANDOM, "Rock")
 # get_songs(YEAR, TOP, 2015)

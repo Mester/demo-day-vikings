@@ -92,5 +92,8 @@ config.py
 # pycharm
 .idea
 
-# mac 
+# mac
 .DS_Store
+
+# database
+db.json

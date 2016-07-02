@@ -4,8 +4,9 @@ import logging
 import requests
 import re
 import random
-from music_app import utils
-from tinyDB import TinyDB, Query
+from tinydb import TinyDB, Query
+from music_app import utils, database
+
 
 
 
@@ -276,7 +277,7 @@ def get_songs(search_type, sort_type, search_term):
     JSON_list = get_list_from_API(HOT)
     all_song_posts, song_count, omit_count, other_count = save_JSON_data(JSON_list)
 
-    db.insert_multiple(all_song_posts)
+    database.db.insert_multiple(all_song_posts)
 
     log_song_statistics(song_count, omit_count, other_count)
     if search_type == GENRE:

@@ -7,8 +7,6 @@ import random
 from my_app import config
 from my_app import utils
 
-
-
 # static variables
 RECENT = "new"
 TOP = "top"
@@ -89,6 +87,36 @@ class Post:
         
         return post_object
 
+<<<<<<< HEAD
+def access_token():
+    """
+    Returns OAuth access token
+    """
+    data = {'grant_type': 'client_credentials'}
+    headers = {'User-Agent': 'ChangeMeClient/0.1 by YourUsername'}
+    for _ in range(5):
+        try:
+            r = requests.post("https://www.reddit.com/api/v1/access_token", auth=(config.CLIENT_ID,
+                                                                                  config.CLIENT_SECRET), data=data,
+                              headers=headers, timeout=(3.05, 20))
+            r.raise_for_status()
+            break
+        except (requests.ConnectionError, requests.Timeout):
+            continue
+        except requests.HTTPError:
+            if r.status_code == 401:
+                logger.error("INVALID CLIENT CREDENTIALS: Please verify that you are properly sending HTTP Basic authorizaion headers and that the client's credentials are correct")
+                break
+            else:
+                r.raise_for_status()
+        except requests.RequestException as e:
+            logger.error(e)
+            sys.exit(1)
+    token = r.json()['access_token']
+    return token
+
+=======
+>>>>>>> master
 
 def save_JSON_data(JSON_list): #TODO: More descriptive name
     """Creates post objects from JSON data and calculates statistics from processing 
@@ -140,6 +168,7 @@ def get_list_from_API(sort_type=HOT, limit=1000):
                 before = r.json()['data']['before']
                 after = r.json()['data']['after']
                 JSON_list.append(r.json())
+<<<<<<< HEAD
             else: 
                 logger.debug("Request fail")
                 break
@@ -147,6 +176,15 @@ def get_list_from_API(sort_type=HOT, limit=1000):
     else:
         logger.debug("Request fail")
        
+=======
+            else:
+                print("Request fail")
+                break
+        return JSON_list
+    else:
+        print("Request fail")
+
+>>>>>>> master
 
 def log_song_info(song_list):
     """Debug function that outputs song information
@@ -286,7 +324,6 @@ def get_songs(search_type, sort_type, search_term):
     return song_list
 
 
-
-# TRY IT OUT! 
+# TRY IT OUT!
 # get_songs(GENRE, RANDOM, "Rock")
 # get_songs(YEAR, TOP, 2015)

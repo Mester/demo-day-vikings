@@ -3,7 +3,6 @@ import requests
 import re
 import collections
 from collections import namedtuple
-from pprint import pprint as pp
 from flask import session, json
 
 def parse_listing(data):

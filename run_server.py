@@ -1,7 +1,9 @@
 import os
 import binascii
+from my_app.config import LOGLEVEL
 
 from my_app import app, settings
+
 
 if __name__ == '__main__':
     app.debug = True

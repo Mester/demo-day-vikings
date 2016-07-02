@@ -3,7 +3,7 @@ import markdown
 from music_app.api_access import get_songs
 from flask import Flask, render_template, request
 from flask import Markup
-from music_app import app, api_access
+from music_app import app, api_access, database
 
 
 @app.route('/', methods=['GET', 'POST'])

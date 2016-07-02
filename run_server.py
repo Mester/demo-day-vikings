@@ -1,7 +1,7 @@
 import os
 import binascii
 
-from my_app import app, settings
+from music_app import app, settings
 
 
 if __name__ == '__main__':

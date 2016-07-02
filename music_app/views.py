@@ -1,9 +1,9 @@
 import os
 import markdown
-from my_app.api_access import get_songs
+from music_app.api_access import get_songs
 from flask import Flask, render_template, request
 from flask import Markup
-from my_app import app, api_access
+from music_app import app, api_access
 
 
 @app.route('/', methods=['GET', 'POST'])

@@ -1,6 +1,6 @@
 import logging
 from flask import Flask
-from my_app.settings import LOGLEVEL
+from music_app.settings import LOGLEVEL
 
 logger = logging.getLogger('music_app')
 logger.setLevel(getattr(logging, LOGLEVEL))
@@ -12,4 +12,4 @@ logger.addHandler(ch)
 
 app = Flask(__name__)
 
-import my_app.views
+import music_app.views

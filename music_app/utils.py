@@ -5,6 +5,7 @@ import collections
 from collections import namedtuple
 from flask import session, json
 
+
 def parse_listing(data):
     songs = [{key:song[key] for key in song.keys() if key in ['url', 'score', 'created_utc', 'thumbnail',
                                                               'title']} for song in [flatten(thing['data']) for thing
@@ -34,20 +35,19 @@ def parse_title(title):
     Returns parsed contents of a post's title
     """
     ro = re.compile(r"""
-        (?P<artist>.+)  # The artist
-        \s*-+\s*        # Skip some spaces and dashes
+        (?P<artist>.+[^- ]+)  # The artist
+        \s*-+\s*       # Skip some spaces and dashes
         (?P<title>.*)   # The title
         \s*\[           # Skip some spaces and opening bracket
         (?P<genre>.*)   # The genre
-        \]\s*\(         # Skip closing bracket, spaces and opening parenthesis
-        (?P<year>\d+)   # The year
-        \)              # Skip closing parenthesis
+        \]\s*\(?         # Skip closing bracket, spaces and opening parenthesis
+        (?P<year>\d+)?   # The year
+        \)?              # Skip closing parenthesis
         """, re.VERBOSE | re.IGNORECASE)
     mo = ro.search(title)
-    if mo is None:
-        return
-    return {'artist': mo.group('artist'), 'title': mo.group('title'), 'genre': mo.group('genre'), 'year': mo.group(
-        'year')}
+    if mo:
+        return mo.groupdict()
+
 
 
 

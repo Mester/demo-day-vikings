@@ -4,7 +4,6 @@ import logging
 import requests
 import re
 import random
-from my_app import config
 from my_app import utils
 
 

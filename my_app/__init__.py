@@ -1,6 +1,6 @@
 import logging
 from flask import Flask
-from config import LOGLEVEL
+from my_app.settings import LOGLEVEL
 
 logger = logging.getLogger('music_app')
 logger.setLevel(getattr(logging, LOGLEVEL))

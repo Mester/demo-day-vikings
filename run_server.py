@@ -1,6 +1,5 @@
 import os
 import binascii
-from my_app.config import LOGLEVEL
 
 from my_app import app, settings
 

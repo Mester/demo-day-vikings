@@ -4,8 +4,8 @@ import logging
 import requests
 import re
 import random
-import config
-import utils
+from my_app import config
+from my_app import utils
 
 # static variables
 RECENT = "new"

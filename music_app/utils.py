@@ -3,7 +3,6 @@ try:
     import urllib.parse as urlparse
 except ImportError:
     import urlparse
-import collections
 try:
     import collections.abc as collections
 except ImportError:

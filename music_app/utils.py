@@ -1,14 +1,9 @@
-import collections
 import re
 try:
     import urllib.parse as urlparse
 except ImportError:
     import urlparse
 import collections.abc as abc
-
-
-
-
 
 
 def parse_listing(data):

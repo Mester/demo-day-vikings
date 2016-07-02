@@ -16,7 +16,7 @@ HOT = "hot"
 GENRE = 0
 YEAR = 1
 
-logger = logging.getLogger('music_app:api_access')
+logger = logging.getLogger('music_app.api_access')
 
 # TO DO:
 # Make the regex for artist/title handle long dash ('\xe2') as well as short dash (-)

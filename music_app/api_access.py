@@ -143,7 +143,6 @@ def get_list_from_API(sort_type=HOT, limit=1000):
     else:
         logger.debug("Request fail")
 
-
 def log_song_info(song_list):
     """Debug function that outputs song information
 

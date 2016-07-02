@@ -5,7 +5,6 @@ from flask import Flask, render_template, request
 from flask import Markup
 from music_app import app, api_access, database
 
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':

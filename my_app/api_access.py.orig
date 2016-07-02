@@ -6,11 +6,6 @@ import re
 import random
 from my_app import config
 from my_app import utils
-<<<<<<< HEAD
-=======
-from pprint import pprint as pp
-
->>>>>>> origin/remove_print
 
 # static variables
 RECENT = "new"
@@ -21,11 +16,8 @@ HOT = "hot"
 GENRE = 0
 YEAR = 1
 
-<<<<<<< HEAD
 logger = logging.getLogger('music_app.api_access')
 
-=======
->>>>>>> origin/remove_print
 # TO DO:
 # Make the regex for artist/title handle long dash ('\xe2') as well as short dash (-)
 # Add assertions/error checking for things like request failures
@@ -36,6 +28,7 @@ logger = logging.getLogger('music_app.api_access')
 # Remove extra normal dash showing up in artist by updating regex
 # Add functionality to search by year to HTML code
 # Convert timestamp to a Date
+
 
 
 class Post:
@@ -94,6 +87,7 @@ class Post:
         
         return post_object
 
+<<<<<<< HEAD
 def access_token():
     """
     Returns OAuth access token
@@ -121,6 +115,8 @@ def access_token():
     token = r.json()['access_token']
     return token
 
+=======
+>>>>>>> master
 
 def save_JSON_data(JSON_list): #TODO: More descriptive name
     """Creates post objects from JSON data and calculates statistics from processing 
@@ -135,30 +131,28 @@ def save_JSON_data(JSON_list): #TODO: More descriptive name
     for JSON_data in JSON_list:
         for post in JSON_data['data']['children']:
             if post['data']['media'] != None:
-                try:            
+                try:
                     all_song_posts.append(Post.create_from_post_JSON(post))
                 except:
                     # Count songs that have formatting errors
                     omit_count += 1
                 # Count songs that are successfully received
                 song_count += 1
-            else: 
+            else:
                 # Count songs that don't have media data (no link to song)
                 other_count += 1
     return all_song_posts, song_count, omit_count, other_count
 
 
-def get_list_from_API(sort_type=HOT):
+def get_list_from_API(sort_type=HOT, limit=1000):
     """Get a list of song data from Reddit API , usually around 1000 posts are gotten
 
     Keyword arguments:
     sort_type -- determines type of API request - HOT, RECENT, TOP, or RANDOM valid
     """
-
-    headers = {"Authorization": "bearer " + token, "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
-    
-    # For the initial request we don't have pagination information so have to do a different request
-    r = requests.get("https://oauth.reddit.com/r/ListenToThis/" + sort_type + ".json?limit=100", headers=headers)
+    headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
+    r = requests.get("https://www.reddit.com/r/ListenToThis/{0}.json?limit=100".format(sort_type),
+                     headers=headers)
     if r.ok:
         JSON_list = []
         before = r.json()['data']['before']
@@ -167,19 +161,30 @@ def get_list_from_API(sort_type=HOT):
 
         # Now we have "after" data to page through the reddit API data
         while after != None:
-            r = requests.get("https://oauth.reddit.com/r/ListenToThis/" + sort_type + ".json?limit=100&after=" + after, headers=headers)
+            r = requests.get("https://www.reddit.com/r/ListenToThis/{0}.json?limit=100&after={1}".format(sort_type,
+                                                                                                       after),
+                             headers=headers)
             if r.ok:
                 before = r.json()['data']['before']
                 after = r.json()['data']['after']
                 JSON_list.append(r.json())
+<<<<<<< HEAD
             else: 
                 logger.debug("Request fail")
                 break
         return JSON_list
     else:
-<<<<<<< HEAD
         logger.debug("Request fail")
        
+=======
+            else:
+                print("Request fail")
+                break
+        return JSON_list
+    else:
+        print("Request fail")
+
+>>>>>>> master
 
 def log_song_info(song_list):
     """Debug function that outputs song information
@@ -210,9 +215,6 @@ def log_song_statistics(song_count, omit_count, other_count):
     logger.info(str(omit_count) + " songs were omitted due to poor formatting. See top of output for info.")
     total = song_count + other_count + omit_count
     logger.info(str(total) + " posts processed.")
-=======
-        print("Request fail")
->>>>>>> origin/remove_print
 
 
 def search_genre(all_song_posts, genre):
@@ -221,17 +223,16 @@ def search_genre(all_song_posts, genre):
     Keyword arguments:
     genre -- The genre to be searched for
     """
+
     matching_songs = []
+
     genre_count = 0
     logger.info("#######################")
     for song in all_song_posts:
         if genre.lower() in song.genre.lower():
             genre_count += 1
             matching_songs.append(song)
-<<<<<<< HEAD
     logger.info(str(genre_count) + " songs found for " + genre + " genre were stored in matching_songs list.")
-=======
->>>>>>> origin/remove_print
     return matching_songs
 
 
@@ -241,17 +242,16 @@ def search_year(all_song_posts, year):
     Keyword arguments:
     year -- The year to be searched for
     """
+
     matching_songs = []
+
     year_count = 0
     logger.info("#######################")
     for song in all_song_posts:
         if str(year) in str(song.year):
             year_count += 1
             matching_songs.append(song)
-<<<<<<< HEAD
     logger.info(str(year_count) + " songs found for the year " + str(year) + " were stored in matching_songs list.")
-=======
->>>>>>> origin/remove_print
     return matching_songs
 
 
@@ -262,7 +262,9 @@ def get_10_songs(list_type, matching_songs): #TODO: more descriptive name
     list_type -- user can select how songs are sorted: RECENT, TOP, RANDOM (HOT to be added)
     matching_songs -- songs that match user entered genre or year
     """
+
     sorted_song_list = []
+
     if list_type == RECENT or list_type.lower() == "recent":
         # Sort songs by RECENT first and log them out
         matching_songs.sort(key=lambda x: x.timestamp, reverse=True)
@@ -276,7 +278,8 @@ def get_10_songs(list_type, matching_songs): #TODO: more descriptive name
             sorted_song_list.append(matching_songs[i])
         return sorted_song_list
     elif list_type == RANDOM or list_type.lower() == "random":
-        # Create a random list of 10 indexes (if possible) and log out songs from the list using them
+        # Sort songs randomly and log them out
+        # Create a random list of 10 indexes (if possible) and print out songs from the list using them
         random_index_list = []
         while len(random_index_list) <= 10 and len(random_index_list) != len(matching_songs):
             temp_idx = random.randint(0,len(matching_songs) - 1)
@@ -307,12 +310,10 @@ def get_songs(search_type, sort_type, search_term):
     # all_song_posts = []
     # matching_songs = []
     # song_list = []
+
     JSON_list = get_list_from_API(HOT)
     all_song_posts, song_count, omit_count, other_count = save_JSON_data(JSON_list)
-<<<<<<< HEAD
     log_song_statistics(song_count, omit_count, other_count)
-=======
->>>>>>> origin/remove_print
     if search_type == GENRE:
         matching_songs = search_genre(all_song_posts, search_term)
     elif search_type == YEAR:
@@ -322,8 +323,7 @@ def get_songs(search_type, sort_type, search_term):
     song_list = get_10_songs(sort_type, matching_songs)
     return song_list
 
-token = access_token()
 
-# TRY IT OUT! 
+# TRY IT OUT!
 # get_songs(GENRE, RANDOM, "Rock")
 # get_songs(YEAR, TOP, 2015)

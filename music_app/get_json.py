@@ -93,6 +93,7 @@ def insert_into_database(db, json_object):
     inserts the json_object into the database
     """
     if is_json_unique(db, json_object):
+        json_object['genre'] = json_object['genre'].lower()
         db.insert(json_object)
 
 if __name__ == '__main__':

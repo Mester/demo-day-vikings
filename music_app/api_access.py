@@ -7,9 +7,6 @@ import random
 from tinydb import TinyDB, Query
 from music_app import utils, database
 
-
-
-
 # static variables
 RECENT = "new"
 TOP = "top"
@@ -31,8 +28,6 @@ logger = logging.getLogger('music_app.api_access')
 # Remove extra normal dash showing up in artist by updating regex
 # Add functionality to search by year to HTML code
 # Convert timestamp to a Date
-
-
 
 class Post:
     # Post class to store/format the attributes for each song post
@@ -92,8 +87,8 @@ class Post:
 
 
 def save_JSON_data(JSON_list): #TODO: More descriptive name
-    """Creates post objects from JSON data and calculates statistics from processing
-
+    """
+    Creates post objects from JSON data and calculates statistics from processing
     Keyword arguments:
     jsonData -- data from the API request
     """
@@ -147,7 +142,6 @@ def get_list_from_API(sort_type=HOT, limit=1000):
         return JSON_list
     else:
         logger.debug("Request fail")
-
 
 def log_song_info(song_list):
     """Debug function that outputs song information

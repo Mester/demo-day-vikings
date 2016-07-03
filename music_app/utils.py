@@ -21,7 +21,6 @@ def parse_listing(data):
         song.update(parsed)
     return songs
 
-
 def flatten(d, parent_key='', sep='_'):
     items = []
     for k, v in d.items():
@@ -48,20 +47,7 @@ def parse_title(title):
         \)?              # Skip closing parenthesis
         """, re.VERBOSE | re.IGNORECASE)
     mo = ro.search(title)
-    if mo:
-        return mo.groupdict()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if mo is None:
+        return
+    return {'artist': mo.group('artist'), 'title': mo.group('title'), 'genre': mo.group('genre'), 'year': mo.group(
+        'year')}

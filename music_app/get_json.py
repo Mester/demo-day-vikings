@@ -4,7 +4,7 @@ import logging
 import re
 from tinydb import TinyDB, Query
 from music_app.utils import parse_listing
-from music_app.settings import DATABASE_NAME
+from music_app.settings import DATABASE_NAME, UPDATE_INTERVAL
 
 logger = logging.getLogger('music_app.get_json')
 
@@ -96,7 +96,9 @@ def insert_into_database(db, json_object):
         json_object['genre'] = json_object['genre'].lower()
         db.insert(json_object)
 
-if __name__ == '__main__':
+def main():
+    logger.info("Updating Database")
+    logger.info("Update Interval is {}".format(UPDATE_INTERVAL))
     db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
     json_data = get_json_from_subreddit("hot")
     json_list = []
@@ -106,3 +108,4 @@ if __name__ == '__main__':
                 j = convert_post_to_json(post)
                 if j is not None:
                     insert_into_database(db, j)
+    logger.info("Updated Database")

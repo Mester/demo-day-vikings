@@ -3,7 +3,7 @@ import os
 import logging
 import re
 from tinydb import TinyDB, Query
-from music_app.utils import parse_listing
+from music_app.utils import parse_title
 from music_app.settings import DATABASE_NAME
 
 logger = logging.getLogger('music_app.get_json')
@@ -48,29 +48,9 @@ def convert_post_to_json(post):
     Returns a json object of the post
     Assumes that the post is valid
     """
-    post_json = {}
-    regex = re.compile(r"""
-                (?P<artist>.+)  # The artist
-                \s*-+\s*        # Skip some spaces and dashes
-                (?P<title>.*)   # The title
-                \s*\[           # Skip some spaces and opening bracket
-                (?P<genre>.*)   # The genre
-                \]\s*\(         # Skip closing bracket, spaces and opening parenthesis
-                (?P<year>\d+)   # The year
-                \)              # Skip closing parenthesis
-                    """, re.VERBOSE | re.IGNORECASE)
-    post_title = post['data']['title']
-    m = regex.search(post_title)
-    if m is None:
+    post_json = parse_title(post['data']['title'])
+    if post_json is None:
         return None
-    if m.group('artist'):
-        post_json['artist'] = m.group('artist')
-    if m.group('title'):
-        post_json['title'] = m.group('title')
-    if m.group('genre'):
-        post_json['genre'] = m.group('genre')
-    if m.group('year'):
-        post_json['year'] = m.group('year')
     post_json['score'] = post['data']['score']
     post_json['url'] = post['data']['url']
     post_json['timestamp'] = post['data']['created_utc']

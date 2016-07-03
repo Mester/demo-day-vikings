@@ -94,6 +94,3 @@ config.py
 
 # mac
 .DS_Store
-
-# database
-db.json

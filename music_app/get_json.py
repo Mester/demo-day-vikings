@@ -4,20 +4,16 @@ import logging
 import re
 import random
 import datetime
-from tinydb import TinyDB, Query
+from tinydb import Query
 from music_app.utils import parse_title
 from music_app.settings import DATABASE_NAME
 from music_app.post import Post
-
 
 # static variables
 GENRE = 0
 YEAR = 1
 
 logger = logging.getLogger('music_app.get_json')
-db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
-q = Query()
-
 
 def get_songs_from_db():
     """
@@ -199,17 +195,3 @@ def get_songs(search_type, sort_type, search_term):
         raise Exception("Invalid Search Type") # TODO: better error handling
     song_list = get_10_songs(sort_type, matching_songs)
     return song_list
-
-
-
-
-if __name__ == '__main__':
-    db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
-    json_data = get_json_from_subreddit("hot")
-    json_list = []
-    for data in json_data:
-        for post in data['data']['children']:
-            if is_post_valid(post):
-                j = convert_post_to_json(post)
-                if j is not None:
-                    insert_into_database(db, j)

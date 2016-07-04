@@ -42,9 +42,9 @@ def parse_title(title):
         (?P<title>.*)   # The title
         \s*\[           # Skip some spaces and opening bracket
         (?P<genre>.*)   # The genre
-        \]\s*\(?         # Skip closing bracket, spaces and opening parenthesis
-        (?P<year>\d+)?   # The year
-        \)?              # Skip closing parenthesis
+        \]\s*\(         # Skip closing bracket, spaces and opening parenthesis
+        (?P<year>\d+)   # The year
+        \)              # Skip closing parenthesis
         """, re.VERBOSE | re.IGNORECASE)
     mo = ro.search(title)
     if mo is None:

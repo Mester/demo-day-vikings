@@ -3,6 +3,7 @@ import os
 import logging
 import re
 import random
+import datetime
 from tinydb import TinyDB, Query
 from music_app.utils import parse_title
 from music_app.settings import DATABASE_NAME
@@ -33,7 +34,7 @@ def create_post_object(j):
     Takes a json from the database and returns
     an instance of type Post
     """
-    return Post(j['title'], j['artist'], j['genre'].title(), j['year'], j['score'], j['thumbnail'], j['timestamp'], j['url'])
+    return Post(j['title'], j['artist'], j['genre'].title(), j['year'], j['score'], j['thumbnail'], datetime.datetime.fromtimestamp(int(j['timestamp'])), j['url'])
 
 
 def get_json_from_subreddit(sort_type):

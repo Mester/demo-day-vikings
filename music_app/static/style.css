@@ -84,6 +84,15 @@ td li {
   padding: 5px;
 }
 
+.timestamp{
+  text-align: right;
+  width: 200px;
+}
+
+.year-upvotes{
+  width: 120px;
+}
+
 #results-message{
   text-align: center;
 }

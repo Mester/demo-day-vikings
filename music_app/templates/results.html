@@ -13,7 +13,7 @@
             <li>{{ song.genre }}</li>
           </ul>
         </td>
-        <td>
+        <td class='year-upvotes'>
           <ul>
             <li>{{ song.year }}</li>
             <li>
@@ -22,7 +22,7 @@
             </li>
           </ul>
         </td>     
-        <td>Posted on {{ song.timestamp }}</td>   
+        <td class='timestamp'>Posted on {{ song.timestamp.strftime('%d %b %Y %H:%M:%S') }}</td>   
      </tr>
     {% endfor %}   
   <table>

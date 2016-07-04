@@ -1,34 +1,33 @@
 {% extends "search.html" %}
 {% block results %}
-<!-- This is all placeholder stuff. -->
 
-<!-- <h1>Enjoy this timeless music, if that's your thing or whatever.</h1>
-<br> -->
 {% if song_list %}
-<table>
-  {% for song in song_list %}
-    <tr>
-      <td><a href="{{ song.url }}"><img src="{{ song.thumbnail }}" alt="some_text"/></a></td>
-      <td>
-        <ul>
-          <li><strong>{{ song.artist }}</strong></li>
-          <li>{{ song.title }}</li>
-          <li>{{ song.genre }}</li>
-        </ul>
-      </td>
-      <td>
-        <ul>
-          <li>{{ song.year }}</li>
-          <li>
-            <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-            {{ song.score }}
-          </li>
-        </ul>
-      </td>     
-      <td>Posted on {{ song.timestamp }}</td>   
-   </tr>
-  {% endfor %}   
-<table>
+  <table>
+    {% for song in song_list %}
+      <tr>
+        <td><a href="{{ song.url }}"><img src="{{ song.thumbnail }}" alt="some_text"/></a></td>
+        <td>
+          <ul>
+            <li><strong>{{ song.artist }}</strong></li>
+            <li>{{ song.title }}</li>
+            <li>{{ song.genre }}</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>{{ song.year }}</li>
+            <li>
+              <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+              {{ song.score }}
+            </li>
+          </ul>
+        </td>     
+        <td>Posted on {{ song.timestamp }}</td>   
+     </tr>
+    {% endfor %}   
+  <table>
+{% else %}
+  <h3 id="results-message">Gasp! No results found for your search!</h3>
 {% endif %}
 
 {% endblock %}

@@ -58,7 +58,10 @@ body {
   padding: 10px 3px;
 }
 
-table { margin: 0 auto; }
+table { 
+  margin: 0 auto;
+  width: 70%;
+}
 
 table, td, th {
   padding: 25px;

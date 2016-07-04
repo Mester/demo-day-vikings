@@ -10,11 +10,6 @@ from music_app.post import Post
 
 
 # static variables
-RECENT = "new"
-TOP = "top"
-RANDOM = "random"
-HOT = "hot"
-
 GENRE = 0
 YEAR = 1
 
@@ -29,7 +24,6 @@ def get_songs_from_db():
     TODO: Implement search_type and sort_type:
     Right now we just use the search term
     """
-    # results = db.search(q.genre == search_term.lower())
     results = db.all()
     return [ create_post_object(r) for r in results]
 
@@ -158,20 +152,19 @@ def get_10_songs(list_type, matching_songs): #TODO: more descriptive name
     """
 
     sorted_song_list = []
-
-    if list_type == RECENT or list_type.lower() == "recent":
+    if list_type.lower() == "recent":
         # Sort songs by RECENT first and log them out
         matching_songs.sort(key=lambda x: x.timestamp, reverse=True)
         for i in range(min(10, len(matching_songs))):
             sorted_song_list.append(matching_songs[i])
         return sorted_song_list
-    elif list_type == TOP or list_type.lower() == "top":
+    elif list_type.lower() == "top":
         # Sort songs by TOP first and log them out
         matching_songs.sort(key=lambda x: x.score, reverse=True)
         for i in range(min(10, len(matching_songs))):
             sorted_song_list.append(matching_songs[i])
         return sorted_song_list
-    elif list_type == RANDOM or list_type.lower() == "random":
+    elif list_type.lower() == "random":
         # Sort songs randomly and log them out
         # Create a random list of 10 indexes (if possible) and print out songs from the list using them
         random_index_list = []
@@ -196,12 +189,7 @@ def get_songs(search_type, sort_type, search_term):
     search_term -- user input search term for genre or year to search for
     """
 
-    # JSON_list = get_list_from_API(HOT)
-    # all_song_posts, song_count, omit_count, other_count = save_JSON_data(JSON_list)
-    # log_song_statistics(song_count, omit_count, other_count)
-
     all_song_posts = get_songs_from_db()
-
     if search_type == GENRE:
         matching_songs = search_genre(all_song_posts, search_term)
     elif search_type == YEAR:

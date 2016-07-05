@@ -1,4 +1,5 @@
 import re
+import os
 try:
     import urllib.parse as urlparse
 except ImportError:
@@ -7,7 +8,8 @@ try:
     import collections.abc as collections
 except ImportError:
     import collections
-
+from music_app.settings import DATABASE_NAME
+from tinydb import TinyDB, Query
 
 def parse_listing(data):
     songs = [{key:song[key] for key in song.keys() if key in ['url', 'score', 'created_utc', 'thumbnail',
@@ -51,3 +53,15 @@ def parse_title(title):
         return
     return {'artist': mo.group('artist'), 'title': mo.group('title'), 'genre': mo.group('genre'), 'year': mo.group(
         'year')}
+
+def get_genres():
+    db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
+    all_genres = { song['genre'] for song in db.all() }
+    specific_genres = set()
+    for genre in all_genres:
+        specific_genres = specific_genres.union(set(genre.strip().split('/')))
+    return specific_genres
+
+def get_total_songs():
+    db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
+    return len(db.all())

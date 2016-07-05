@@ -97,7 +97,7 @@ td li {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 599px) {
   .content {
     margin: 70px auto 0 auto;
   }

@@ -3,12 +3,6 @@ body {
   background: #555152;
   color: #DCE9BE;
 }
-@media (max-width: 979px) {
-  body {
-    padding-top: 0px;
-  }
-}
-
 
 .navbar-custom {
     background-color:#2E2633;
@@ -95,4 +89,35 @@ td li {
 
 #results-message{
   text-align: center;
+}
+
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}
+
+@media (max-width: 599px) {
+  .content {
+    margin: 70px auto 0 auto;
+  }
+
+  .custom-pick-genre {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+  }
+  .search-bar input {
+    width: 90%;
+    display: block;
+    border-radius: 5px;
+    border: 1px solid black;
+    margin: 0 auto;
+  }
+
+  .search-bar button {
+    margin: 10px auto 0 auto;
+    border-radius: 5px;
+    border: 1px solid black;
+  }
 }

@@ -1,6 +1,6 @@
-# Demo Day Vikings
+# Timeless Music for You and Your Friends to Listen to When You Want Something like That: The Web App
 
-Demo Day Vikings is a fun project put together by some cool kids, trying to showcase their web development skills using python for the rmotr demo day showdown.
+Timeless Music for You and Your Friends to Listen to When You Want Something like That: The Web App is a fun project put together by some cool kids, trying to showcase their web development skills using python for the rmotr demo day showdown.
 
 *Pick a Genre, Get some music*
 

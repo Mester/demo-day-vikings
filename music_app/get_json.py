@@ -87,6 +87,21 @@ def convert_post_to_json(post):
 
     return post_json
 
+def update_score(db, json_object):
+    """
+    Method to update the score of the song
+    """
+    q = Query()
+    j = db.search(q.url == json_object['url'])[0]
+    logger.debug("Duplicate post found: {}".format(j['title'].encode('ascii', 'ignore')))
+    logger.debug("Old Score: {}".format(j['score']))
+    logger.debug("Now Score: {}".format(json_object['score']))
+    if int(j['score']) != int(json_object['score']):
+        logger.debug("Updating Score for {}".format(j['title'].encode('ascii', 'ignore')))
+        db.update({'score':json_object['score']}, q.url == json_object['url'])
+    else:
+        logger.debug("The scores are still the same, not updating")
+
 def is_json_unique(db, json_object):
     """
     Checks if the url of this post is present in 
@@ -104,6 +119,8 @@ def insert_into_database(db, json_object):
     if is_json_unique(db, json_object):
         json_object['genre'] = json_object['genre'].lower()
         db.insert(json_object)
+    else:
+        update_score(db, json_object)
 
 
 def search_genre(all_song_posts, genre):

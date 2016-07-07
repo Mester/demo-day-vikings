@@ -8,7 +8,7 @@ try:
     import collections.abc as collections
 except ImportError:
     import collections
-from music_app.settings import DATABASE_NAME
+from music_app.settings import DATABASE_NAME, DOMAIN
 from tinydb import TinyDB, Query
 
 def parse_listing(data):
@@ -65,3 +65,12 @@ def get_genres():
 def get_total_songs():
     db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
     return len(db.all())
+
+def convert_url_to_embed_url(url):
+    """
+    Method to convert the url to a video embed url
+    """
+    if 'you' in url:
+        id = url.split('=')[-1]
+        return "https://www.youtube.com/embed/" + id + "?autoplay=1&origin=" + DOMAIN
+    return url

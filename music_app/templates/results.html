@@ -5,7 +5,10 @@
   <table>
     {% for song in song_list %}
       <tr>
-        <td><a href="{{ song.url }}"><img src="{{ song.thumbnail }}" alt="some_text"/></a></td>
+        <td><a class="video_layer" href="{{ song.url }}"><img src="{{ song.thumbnail }}" alt="some_text"/></a></td>
+	<script>
+		$('.video_layer').colorbox({iframe:true});
+	</script>
         <td>
           <ul>
             <li><strong>{{ song.artist }}</strong></li>

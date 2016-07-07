@@ -1,3 +1,4 @@
+from music_app.utils import convert_url_to_embed_url as cu
 class Post:
     """
     A Class to represent a Post on r/ListenToThis
@@ -12,5 +13,5 @@ class Post:
         self.score = score
         self.thumbnail = thumbnail
         self.timestamp = timestamp
-        self.url = url
+        self.url = cu(url)
     #TODO: Add more getter and setters if required in future

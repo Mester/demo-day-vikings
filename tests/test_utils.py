@@ -10,10 +10,10 @@ class TestUtils(unittest.TestCase):
     
     def setUp(self):
         with open(os.path.join(BASE_DIR, 'tests', 'fixtures', 'test.json')) as f:
-            j = json.load(f)
+            self.j = json.load(f)
         self.database_name = os.path.join(os.getcwd(), 'test.db')
         db = TinyDB(self.database_name)
-        db.insert_multiple(j)
+        db.insert_multiple(self.j)
         db.close
 
     def tearDown(self):
@@ -27,3 +27,15 @@ class TestUtils(unittest.TestCase):
             'classical', 'noise rock', 'hardcore', 'atmospheric black metal', 'canadian folk metal', 'indie pop', 'post rock', 'experimental',
             'indie', 'piano', 'psychedelic'])
         self.assertEqual(get_genres(self.database_name), genres)
+
+    def test_parse_title(self):
+        title = """
+        Adam Torres -- Juniper Arms [folk](2016)
+        """.strip()
+        expected = {
+                'artist': 'Adam Torres',
+                'title': 'Juniper Arms ',
+                'genre': 'folk',
+                'year': '2016',
+                }
+        self.assertEqual(parse_title(title), expected)

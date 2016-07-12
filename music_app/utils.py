@@ -56,14 +56,21 @@ def parse_title(title):
 
 def get_genres(database_name):
     """Utility method to get all the genres as a set"""
-    db = TinyDB(os.path.join(os.getcwd(), database))
+    db = TinyDB(os.path.join(os.getcwd(), database_name))
     all_genres = { song['genre'] for song in db.all() }
     specific_genres = set()
     for genre in all_genres:
         specific_genres = specific_genres.union(set(genre.strip().split('/')))
-    return specific_genres
+    db.close()
+    return _strip_spaces(specific_genres)
+
+def _strip_spaces(genres):
+    """Helper method to strip spaces and remove duplicates from genres """
+    return { x.strip() for x in genres }
 
 def get_total_songs(database_name):
     """Utility Method to get the total number of songs in the database"""
     db = TinyDB(os.path.join(os.getcwd(), database_name))
-    return len(db.all())
+    total_length = len(db.all())
+    db.close()
+    return total_length

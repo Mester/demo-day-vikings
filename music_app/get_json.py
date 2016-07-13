@@ -37,12 +37,11 @@ def create_post_object(j):
     return Post(j['title'], j['artist'], j['genre'].title(), j['year'], j['score'], j['thumbnail'], datetime.datetime.fromtimestamp(int(j['timestamp'])), j['url'])
 
 
-def get_json_from_subreddit(sort_type):
+def get_json_from_subreddit(sort_type, url):
     """
     Method to get the json from listentothis subreddit
     """
     json_list = []
-    url = "https://www.reddit.com/r/ListenToThis/{}.json?limit=100"
     headers = {"User-Agent":"ChangeMeClient/0.1 by username"}
     r = requests.get(url.format(sort_type), headers=headers)
     if r.ok:
@@ -222,7 +221,8 @@ def get_songs(search_type, sort_type, search_term):
 
 if __name__ == '__main__':
     db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
-    json_data = get_json_from_subreddit("hot")
+    url = "https://www.reddit.com/r/ListenToThis/{}.json?limit=100"
+    json_data = get_json_from_subreddit("hot", url)
     json_list = []
     for data in json_data:
         for post in data['data']['children']:

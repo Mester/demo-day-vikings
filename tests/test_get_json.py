@@ -11,3 +11,9 @@ class TestGetJson(BaseMusicAppTestCase):
     def test_return_value_list(self):
         expected = get_json_from_subreddit("hot", 1)
         self.assertTrue(isinstance(expected, list))
+
+    @responses.activate
+    def test_return_value_length(self):
+        expected = get_json_from_subreddit("hot", 1)
+        self.assertEqual(len(expected), 1)
+

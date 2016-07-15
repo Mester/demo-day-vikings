@@ -37,21 +37,23 @@ def create_post_object(j):
     return Post(j['title'], j['artist'], j['genre'].title(), j['year'], j['score'], j['thumbnail'], datetime.datetime.fromtimestamp(int(j['timestamp'])), j['url'])
 
 
-def get_json_from_subreddit(sort_type):
+def get_json_from_subreddit(sort_type, limit):
     """
     Method to get the json from listentothis subreddit
     """
     json_list = []
-    url = "https://www.reddit.com/r/ListenToThis/{}.json?limit=100"
+    url = "https://www.reddit.com/r/ListenToThis/{}.json?limit={}".format(sort_type, limit)
     headers = {"User-Agent":"ChangeMeClient/0.1 by username"}
+    logger.debug("Fetching: {}".format(url))
     r = requests.get(url.format(sort_type), headers=headers)
     if r.ok:
         before = r.json()['data']['before']
         after = r.json()['data']['after']
         json_list.append(r.json())
         while after != None:
-            url = "https://www.reddit.com/r/ListenToThis/{}.json?limit=100&after={}".format(sort_type, after)
-            r = requests.get(url, headers=headers)
+            new_url = url + "&after={}".format(after)
+            logger.debug("Fetching: {}".format(new_url))
+            r = requests.get(new_url, headers=headers)
             if r.ok:
                 before = r.json()['data']['before']
                 after = r.json()['data']['after']
@@ -217,12 +219,9 @@ def get_songs(search_type, sort_type, search_term):
     song_list = get_10_songs(sort_type, matching_songs)
     return song_list
 
-
-
-
 if __name__ == '__main__':
     db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
-    json_data = get_json_from_subreddit("hot")
+    json_data = get_json_from_subreddit("hot", 100)
     json_list = []
     for data in json_data:
         for post in data['data']['children']:

@@ -219,13 +219,15 @@ def get_songs(search_type, sort_type, search_term):
     song_list = get_10_songs(sort_type, matching_songs)
     return song_list
 
-if __name__ == '__main__':
+def main():
     db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
-    json_data = get_json_from_subreddit("hot", 100)
-    json_list = []
-    for data in json_data:
-        for post in data['data']['children']:
-            if is_post_valid(post):
-                j = convert_post_to_json(post)
-                if j is not None:
-                    insert_into_database(db, j)
+    for sort_type in ["hot", "new", "top"]:
+        logger.debug("Fetching url: {}".format(sort_type))
+        json_data = get_json_from_subreddit(sort_type, 100)
+        json_list = []
+        for data in json_data:
+            for post in data['data']['children']:
+                if is_post_valid(post):
+                    j = convert_post_to_json(post)
+                    if j is not None:
+                        insert_into_database(db, j)

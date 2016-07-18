@@ -5,6 +5,7 @@ class Post:
     information on the UI
     """
     def __init__(self, title, artist, genre, year, score, thumbnail, timestamp, url):
+        """Method to initialize a Post instance"""
         self.title = title
         self.artist = artist
         self.genre = genre

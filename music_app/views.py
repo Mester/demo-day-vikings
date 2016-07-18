@@ -13,6 +13,7 @@ YEAR = 1
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """Route for the main page"""
     if request.method == 'POST':
         search_term = request.form['search_term']
         sort_type = request.form['sort_type']
@@ -22,6 +23,7 @@ def index():
 
 @app.route('/list/<search_term>/<sort_type>', methods=['POST', 'GET'])
 def show_results(search_term, sort_type):
+    """Route after the search results"""
     if request.method == 'POST':
         search_term = request.form['search_term']
         sort_type = request.form['sort_type']
@@ -32,6 +34,7 @@ def show_results(search_term, sort_type):
 
 @app.route('/about')
 def show_about():
+    """Route for the about page"""
     with open('README.md') as f:
         readme = Markup(markdown.markdown(f.read()))
     return render_template('about.html', readme=readme)

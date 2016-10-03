@@ -12,6 +12,7 @@ from music_app.settings import DATABASE_NAME
 from tinydb import TinyDB, Query
 
 def parse_listing(data):
+    """Method to parse the listing from data"""
     songs = [{key:song[key] for key in song.keys() if key in ['url', 'score', 'created_utc', 'thumbnail',
                                                               'title']} for song in [flatten(thing['data']) for thing
                                                                                      in data['data']['children']
@@ -24,6 +25,7 @@ def parse_listing(data):
     return songs
 
 def flatten(d, parent_key='', sep='_'):
+    """Flatten a dictionary of dictionaries"""
     items = []
     for k, v in d.items():
         new_key = parent_key + sep + k if parent_key else k

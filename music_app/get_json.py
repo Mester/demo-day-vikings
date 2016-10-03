@@ -220,6 +220,7 @@ def get_songs(search_type, sort_type, search_term):
     return song_list
 
 def main():
+    """Method to put it all together"""
     db = TinyDB(os.path.join(os.getcwd(), DATABASE_NAME))
     for sort_type in ["hot", "new", "top"]:
         logger.debug("Fetching url: {}".format(sort_type))
